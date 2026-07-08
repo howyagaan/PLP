@@ -35,44 +35,66 @@
         cursor: pointer;
       }
 
+      button:focus-visible {
+        outline: 4px solid var(--yellow);
+        outline-offset: -4px;
+      }
+
       .wrap {
         width: min(100%, 1280px);
         margin: 0 auto;
-        padding: 20px 14px;
+        padding: 22px 14px;
       }
 
       .hero {
+        position: relative;
+        overflow: hidden;
         background:
           radial-gradient(circle at 12% 9%, var(--pink) 0 12%, transparent 30%),
           radial-gradient(circle at 88% 0%, var(--cyan) 0 13%, transparent 31%),
           linear-gradient(135deg, var(--purple) 0 58%, var(--green) 58% 70%, var(--yellow) 70% 100%);
       }
 
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -70px;
+        bottom: -95px;
+        width: min(58vw, 430px);
+        aspect-ratio: 1;
+        background: url("/public/premier-league-logo-symbol.png") center / contain no-repeat;
+        opacity: 0.12;
+        pointer-events: none;
+      }
+
       .hero-grid {
+        position: relative;
+        z-index: 1;
         display: grid;
         gap: 18px;
       }
 
       .brand {
         display: grid;
-        grid-template-columns: 76px minmax(0, 1fr);
-        gap: 14px;
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 12px;
         align-items: center;
       }
 
       .brand img {
-        width: 76px;
-        height: 76px;
+        width: 64px;
+        height: 64px;
         object-fit: contain;
         background: white;
         padding: 8px;
-        box-shadow: 7px 7px 0 var(--green);
+        box-shadow: 6px 6px 0 var(--green);
       }
 
       h1 {
         margin: 0;
-        font-size: clamp(38px, 12vw, 86px);
-        line-height: 0.9;
+        max-width: 920px;
+        font-size: clamp(34px, 10vw, 86px);
+        line-height: 0.92;
         letter-spacing: 0;
       }
 
@@ -85,8 +107,9 @@
 
       .hero-stat {
         min-width: 0;
-        padding: 11px 9px;
+        padding: 12px 10px;
         background: var(--green);
+        box-shadow: 4px 4px 0 rgb(55 0 60 / 22%);
       }
 
       .hero-stat:nth-child(2) {
@@ -96,6 +119,10 @@
 
       .hero-stat:nth-child(3) {
         background: var(--cyan);
+      }
+
+      .hero-stat:first-child {
+        grid-column: 1 / -1;
       }
 
       .label {
@@ -111,12 +138,51 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: clamp(16px, 5vw, 20px);
+        font-size: clamp(16px, 5vw, 22px);
         font-weight: 900;
         line-height: 1;
       }
 
       .compiled {
+        background:
+          linear-gradient(90deg, rgb(55 0 60 / 12%) 1px, transparent 1px) 0 0 / 32px 32px,
+          var(--green);
+        color: var(--purple);
+      }
+
+      .section-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+        color: var(--purple);
+      }
+
+      .section-bar.light {
+        color: white;
+      }
+
+      .section-title {
+        margin: 0;
+        font-size: clamp(28px, 8vw, 56px);
+        line-height: 0.92;
+        text-transform: uppercase;
+      }
+
+      .section-count {
+        margin: 0;
+        padding: 7px 10px;
+        background: var(--purple);
+        color: white;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .section-bar.light .section-count {
         background: var(--green);
         color: var(--purple);
       }
@@ -130,8 +196,8 @@
       .compiled-head,
       .manager-row {
         display: grid;
-        grid-template-columns: 42px minmax(0, 1fr) 58px 50px;
-        gap: 7px;
+        grid-template-columns: 38px minmax(0, 1fr) 56px 44px;
+        gap: 6px;
         align-items: center;
       }
 
@@ -139,7 +205,7 @@
         padding: 12px 10px;
         background: var(--purple);
         color: white;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 900;
         letter-spacing: 0.1em;
         text-transform: uppercase;
@@ -153,11 +219,20 @@
         border-bottom: 2px solid rgb(55 0 60 / 12%);
         text-align: left;
         font-weight: 900;
+        transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
       }
 
       .manager-row.active {
         background: var(--green);
         box-shadow: inset 7px 0 0 var(--pink);
+      }
+
+      .manager-row:hover {
+        background: rgb(5 240 255 / 28%);
+      }
+
+      .manager-row.active:hover {
+        background: var(--green);
       }
 
       .num,
@@ -193,7 +268,9 @@
       }
 
       .predictions {
-        background: var(--pink);
+        background:
+          linear-gradient(135deg, rgb(255 255 255 / 18%) 0 10%, transparent 10% 20%, rgb(255 255 255 / 10%) 20% 30%, transparent 30%),
+          var(--pink);
       }
 
       .panel {
@@ -204,10 +281,9 @@
       }
 
       .panel-head {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 12px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
         padding: 14px;
         background: var(--purple);
         color: white;
@@ -225,20 +301,21 @@
       .panel-head h2,
       .live-title {
         margin: 0;
-        font-size: clamp(28px, 8.5vw, 52px);
-        line-height: 0.9;
+        font-size: clamp(32px, 8.5vw, 58px);
+        line-height: 0.92;
         overflow-wrap: anywhere;
       }
 
       .chips {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 7px;
         color: var(--purple);
       }
 
       .chip {
         min-width: 48px;
-        padding: 8px 9px;
+        padding: 9px 10px;
         background: var(--green);
         text-align: center;
         font-weight: 900;
@@ -266,26 +343,27 @@
       .mobile-live-head {
         display: grid;
         align-items: center;
-        gap: 7px;
-        padding: 9px 10px;
+        gap: 5px;
+        padding: 9px 8px;
         background: var(--yellow);
         color: var(--purple);
-        font-size: 9px;
+        font-size: 8px;
         font-weight: 900;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
       }
 
       .mobile-table-head {
-        grid-template-columns: 42px minmax(0, 1fr) 38px 40px;
+        grid-template-columns: 54px minmax(0, 1fr) 42px 39px;
       }
 
       .pick-row {
         display: grid;
-        grid-template-columns: 42px minmax(0, 1fr) 38px 40px;
-        gap: 7px;
+        grid-template-columns: 54px minmax(0, 1fr) 42px 39px;
+        gap: 5px;
         align-items: center;
-        padding: 11px 10px;
+        min-height: 48px;
+        padding: 10px 8px;
         color: var(--purple);
         font-weight: 900;
       }
@@ -295,7 +373,8 @@
       }
 
       .standings {
-        background: var(--cyan);
+        background:
+          linear-gradient(90deg, var(--cyan) 0 64%, var(--yellow) 64% 78%, var(--green) 78% 100%);
         color: var(--purple);
       }
 
@@ -312,24 +391,24 @@
       }
 
       .live-card {
-        margin: 9px;
-        padding: 11px;
+        margin: 7px;
+        padding: 9px 8px;
         background: rgb(5 240 255 / 20%);
         color: var(--purple);
       }
 
       .live-main {
         display: grid;
-        grid-template-columns: 34px minmax(0, 1fr) 31px 31px 31px 38px 34px;
-        gap: 8px;
+        grid-template-columns: 28px minmax(74px, 1fr) repeat(3, 24px) 30px 28px;
+        gap: 4px;
         align-items: center;
         font-weight: 900;
-        font-size: 12px;
+        font-size: 11px;
       }
 
       .mobile-live-head {
         display: grid;
-        grid-template-columns: 34px minmax(0, 1fr) 31px 31px 31px 38px 34px;
+        grid-template-columns: 28px minmax(74px, 1fr) repeat(3, 24px) 30px 28px;
         background: var(--pink);
         color: white;
       }
@@ -353,6 +432,36 @@
 
       .desktop-table {
         display: none;
+      }
+
+      .rules {
+        background:
+          linear-gradient(135deg, var(--purple) 0 50%, #250029 50% 100%);
+      }
+
+      .rules-grid {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+        color: var(--purple);
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .rule-card {
+        display: flex;
+        align-items: center;
+        min-height: 54px;
+        padding: 14px;
+        background: var(--green);
+      }
+
+      .rule-card:nth-child(2) {
+        background: var(--cyan);
+      }
+
+      .rule-card:nth-child(3) {
+        background: var(--yellow);
       }
 
       @media (min-width: 760px) {
@@ -379,6 +488,16 @@
           grid-template-columns: 1fr;
         }
 
+        .hero-stat:first-child {
+          grid-column: auto;
+        }
+
+        .panel-head {
+          grid-template-columns: minmax(0, 1fr) 240px;
+          align-items: end;
+          padding: 18px;
+        }
+
         .compiled-head,
         .manager-row {
           grid-template-columns: 58px minmax(0, 1fr) 82px 82px 82px;
@@ -402,9 +521,9 @@
 
         th,
         td {
-          padding: 13px 10px;
+          padding: 13px 12px;
           border-bottom: 2px solid rgb(55 0 60 / 10%);
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 900;
           text-align: right;
         }
@@ -423,6 +542,91 @@
           width: 32%;
           text-align: left;
         }
+
+        .rules-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          padding: 16px;
+        }
+
+        .rule-card {
+          min-height: 96px;
+          font-size: 20px;
+        }
+      }
+
+      @media (min-width: 1100px) {
+        .wrap {
+          padding: 34px 28px;
+        }
+
+        .table-shell {
+          box-shadow: 12px 12px 0 var(--pink);
+        }
+
+        .panel {
+          box-shadow: 12px 12px 0 var(--cyan);
+        }
+
+        .live-panel {
+          box-shadow: 12px 12px 0 var(--yellow);
+        }
+
+        .compiled-head,
+        .manager-row {
+          grid-template-columns: 70px minmax(0, 1fr) 96px 96px 96px;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .wrap {
+          padding-inline: 10px;
+        }
+
+        .brand {
+          grid-template-columns: 58px minmax(0, 1fr);
+        }
+
+        .brand img {
+          width: 58px;
+          height: 58px;
+          box-shadow: 5px 5px 0 var(--green);
+        }
+
+        h1 {
+          font-size: clamp(31px, 10vw, 38px);
+        }
+
+        .compiled-head,
+        .manager-row {
+          grid-template-columns: 34px minmax(0, 1fr) 48px 38px;
+          gap: 5px;
+        }
+
+        .compiled-head {
+          font-size: 8px;
+        }
+
+        .num,
+        .score {
+          font-size: 18px;
+        }
+
+        .live-card {
+          margin-inline: 5px;
+          padding-inline: 6px;
+        }
+
+        .live-main,
+        .mobile-live-head {
+          grid-template-columns: 25px minmax(66px, 1fr) repeat(3, 21px) 27px 25px;
+          gap: 3px;
+          font-size: 10px;
+        }
+
+        .mobile-table-head,
+        .pick-row {
+          grid-template-columns: 48px minmax(0, 1fr) 38px 35px;
+        }
       }
     </style>
   </head>
@@ -440,6 +644,10 @@
 
       <section class="compiled">
         <div class="wrap">
+          <div class="section-bar">
+            <h2 class="section-title">Manager Table</h2>
+            <p class="section-count">40 Managers</p>
+          </div>
           <div class="table-shell">
             <div class="compiled-head">
               <span>Pos</span>
@@ -455,6 +663,10 @@
 
       <section class="predictions">
         <div class="wrap">
+          <div class="section-bar light">
+            <h2 class="section-title">Selected Manager</h2>
+            <p class="section-count">20 Picks</p>
+          </div>
           <div class="panel">
             <div class="panel-head">
               <div>
@@ -490,6 +702,10 @@
 
       <section class="standings">
         <div class="wrap">
+          <div class="section-bar">
+            <h2 class="section-title">League Table</h2>
+            <p class="section-count">Live standings</p>
+          </div>
           <div class="live-panel">
             <div class="live-head">
               <h2 class="live-title">LIVE STANDINGS</h2>
@@ -524,14 +740,18 @@
 
       <section class="rules">
         <div class="wrap">
+          <div class="section-bar light">
+            <h2 class="section-title">Scoring Rules</h2>
+            <p class="section-count">Golf rules</p>
+          </div>
           <div class="live-panel">
             <div class="live-head">
               <h2 class="live-title">RULES</h2>
             </div>
-            <div style="display:grid;gap:10px;padding:14px;color:var(--purple);font-weight:900;text-transform:uppercase">
-              <div style="background:var(--green);padding:13px">LOWEST SCORE WINS</div>
-              <div style="background:var(--cyan);padding:13px">SCORE = Difference between predicted position and actual position</div>
-              <div style="background:var(--yellow);padding:13px">PERFECT PREDICTION = -5pts</div>
+            <div class="rules-grid">
+              <div class="rule-card">LOWEST SCORE WINS</div>
+              <div class="rule-card">SCORE = Difference between predicted position and actual position</div>
+              <div class="rule-card">PERFECT PREDICTION = -5pts</div>
             </div>
           </div>
         </div>
