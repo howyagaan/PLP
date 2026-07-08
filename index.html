@@ -543,6 +543,61 @@
           text-align: left;
         }
 
+        .prediction-table {
+          table-layout: auto;
+        }
+
+        .prediction-table th,
+        .prediction-table td {
+          padding: 16px 18px;
+          font-size: 18px;
+          text-align: left;
+        }
+
+        .prediction-table th {
+          background: var(--yellow);
+          color: var(--purple);
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        .prediction-table th:nth-child(1),
+        .prediction-table td:nth-child(1) {
+          width: 120px;
+          text-align: center;
+        }
+
+        .prediction-table th:nth-child(2),
+        .prediction-table td:nth-child(2) {
+          width: auto;
+          text-align: left;
+        }
+
+        .prediction-table th:nth-child(3),
+        .prediction-table td:nth-child(3) {
+          width: 170px;
+          text-align: center;
+        }
+
+        .prediction-table th:nth-child(4),
+        .prediction-table td:nth-child(4) {
+          width: 110px;
+          text-align: right;
+        }
+
+        .prediction-table td:nth-child(1),
+        .prediction-table td:nth-child(3) {
+          font-size: 22px;
+          line-height: 1;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .prediction-table td:nth-child(1)::before {
+          content: "#";
+          opacity: 0.45;
+          margin-right: 2px;
+        }
+
         .rules-grid {
           grid-template-columns: repeat(3, minmax(0, 1fr));
           padding: 16px;
@@ -665,7 +720,6 @@
         <div class="wrap">
           <div class="section-bar light">
             <h2 class="section-title">Selected Manager</h2>
-            <p class="section-count">20 Picks</p>
           </div>
           <div class="panel">
             <div class="panel-head">
@@ -685,7 +739,7 @@
               <span class="right">Score</span>
             </div>
             <div class="mobile-cards" id="pickCards"></div>
-            <table class="desktop-table">
+            <table class="desktop-table prediction-table">
               <thead>
                 <tr>
                   <th>Predicted</th>
