@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Premier League Predictions 26/27</title>
+    <link rel="icon" href="/public/premier-league-logo-symbol.png" />
+    <style>
+      :root {
+        --purple: #37003c;
+        --green: #00ff85;
+        --pink: #ff2882;
+        --cyan: #05f0ff;
+        --yellow: #ebff00;
+        --pl-font: "Radikal", "Avenir Next", "Futura", "Trebuchet MS", Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+        background: var(--purple);
+        color: white;
+        font-family: var(--pl-font);
+      }
+
+      button {
+        border: 0;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .wrap {
+        width: min(100%, 1280px);
+        margin: 0 auto;
+        padding: 20px 14px;
+      }
+
+      .hero {
+        background:
+          radial-gradient(circle at 12% 9%, var(--pink) 0 12%, transparent 30%),
+          radial-gradient(circle at 88% 0%, var(--cyan) 0 13%, transparent 31%),
+          linear-gradient(135deg, var(--purple) 0 58%, var(--green) 58% 70%, var(--yellow) 70% 100%);
+      }
+
+      .hero-grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .brand {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+      }
+
+      .brand img {
+        width: 76px;
+        height: 76px;
+        object-fit: contain;
+        background: white;
+        padding: 8px;
+        box-shadow: 7px 7px 0 var(--green);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(38px, 12vw, 86px);
+        line-height: 0.9;
+        letter-spacing: 0;
+      }
+
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        color: var(--purple);
+      }
+
+      .hero-stat {
+        min-width: 0;
+        padding: 11px 9px;
+        background: var(--green);
+      }
+
+      .hero-stat:nth-child(2) {
+        background: var(--pink);
+        color: white;
+      }
+
+      .hero-stat:nth-child(3) {
+        background: var(--cyan);
+      }
+
+      .label {
+        margin: 0;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .value {
+        margin: 4px 0 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: clamp(16px, 5vw, 20px);
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .compiled {
+        background: var(--green);
+        color: var(--purple);
+      }
+
+      .table-shell {
+        overflow: hidden;
+        background: white;
+        box-shadow: 8px 8px 0 var(--pink);
+      }
+
+      .compiled-head,
+      .manager-row {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr) 58px 50px;
+        gap: 7px;
+        align-items: center;
+      }
+
+      .compiled-head {
+        padding: 12px 10px;
+        background: var(--purple);
+        color: white;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .manager-row {
+        width: 100%;
+        padding: 12px 10px;
+        background: white;
+        color: var(--purple);
+        border-bottom: 2px solid rgb(55 0 60 / 12%);
+        text-align: left;
+        font-weight: 900;
+      }
+
+      .manager-row.active {
+        background: var(--green);
+        box-shadow: inset 7px 0 0 var(--pink);
+      }
+
+      .num,
+      .score,
+      .perf {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .num,
+      .score {
+        font-size: 20px;
+      }
+
+      .score,
+      .perf,
+      .right {
+        text-align: right;
+      }
+
+      .gap {
+        display: none;
+        text-align: right;
+      }
+
+      .manager-name,
+      .club {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .club {
+        line-height: 1.05;
+      }
+
+      .predictions {
+        background: var(--pink);
+      }
+
+      .panel {
+        overflow: hidden;
+        background: white;
+        color: var(--purple);
+        box-shadow: 8px 8px 0 var(--cyan);
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px;
+        background: var(--purple);
+        color: white;
+      }
+
+      .panel-head p {
+        margin: 0 0 5px;
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .panel-head h2,
+      .live-title {
+        margin: 0;
+        font-size: clamp(28px, 8.5vw, 52px);
+        line-height: 0.9;
+        overflow-wrap: anywhere;
+      }
+
+      .chips {
+        display: flex;
+        gap: 7px;
+        color: var(--purple);
+      }
+
+      .chip {
+        min-width: 48px;
+        padding: 8px 9px;
+        background: var(--green);
+        text-align: center;
+        font-weight: 900;
+      }
+
+      .chip:nth-child(2) {
+        background: var(--cyan);
+      }
+
+      .chip-label {
+        display: block;
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .chip-value {
+        display: block;
+        margin-top: 3px;
+        font-size: 20px;
+        line-height: 1;
+      }
+
+      .mobile-table-head,
+      .mobile-live-head {
+        display: grid;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 10px;
+        background: var(--yellow);
+        color: var(--purple);
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .mobile-table-head {
+        grid-template-columns: 42px minmax(0, 1fr) 38px 40px;
+      }
+
+      .pick-row {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr) 38px 40px;
+        gap: 7px;
+        align-items: center;
+        padding: 11px 10px;
+        color: var(--purple);
+        font-weight: 900;
+      }
+
+      .perfect {
+        color: #008f4c;
+      }
+
+      .standings {
+        background: var(--cyan);
+        color: var(--purple);
+      }
+
+      .live-panel {
+        overflow: hidden;
+        background: white;
+        box-shadow: 8px 8px 0 var(--yellow);
+      }
+
+      .live-head {
+        padding: 14px;
+        background: var(--purple);
+        color: white;
+      }
+
+      .live-card {
+        margin: 9px;
+        padding: 11px;
+        background: rgb(5 240 255 / 20%);
+        color: var(--purple);
+      }
+
+      .live-main {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) 31px 31px 31px 38px 34px;
+        gap: 8px;
+        align-items: center;
+        font-weight: 900;
+        font-size: 12px;
+      }
+
+      .mobile-live-head {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) 31px 31px 31px 38px 34px;
+        background: var(--pink);
+        color: white;
+      }
+
+      .playing {
+        background: var(--yellow) !important;
+        box-shadow: inset 6px 0 0 var(--pink);
+      }
+
+      .relegation-line {
+        margin: 7px 0;
+        border-top: 5px solid #e90052;
+      }
+
+      .relegation-row td {
+        padding: 0;
+        border: 0;
+        border-top: 5px solid #e90052;
+        background: white;
+      }
+
+      .desktop-table {
+        display: none;
+      }
+
+      @media (min-width: 760px) {
+        .wrap {
+          padding: 28px 24px;
+        }
+
+        .hero-grid {
+          grid-template-columns: minmax(0, 1fr) 300px;
+          align-items: end;
+        }
+
+        .brand {
+          grid-template-columns: 100px minmax(0, 1fr);
+          gap: 20px;
+        }
+
+        .brand img {
+          width: 100px;
+          height: 100px;
+        }
+
+        .hero-stats {
+          grid-template-columns: 1fr;
+        }
+
+        .compiled-head,
+        .manager-row {
+          grid-template-columns: 58px minmax(0, 1fr) 82px 82px 82px;
+        }
+
+        .compiled-head .gap,
+        .manager-row .gap {
+          display: block;
+        }
+
+        .mobile-cards {
+          display: none;
+        }
+
+        .desktop-table {
+          display: table;
+          width: 100%;
+          border-collapse: collapse;
+          table-layout: fixed;
+        }
+
+        th,
+        td {
+          padding: 13px 10px;
+          border-bottom: 2px solid rgb(55 0 60 / 10%);
+          font-size: 14px;
+          font-weight: 900;
+          text-align: right;
+        }
+
+        th {
+          background: var(--yellow);
+        }
+
+        .live-panel th {
+          background: var(--pink);
+          color: white;
+        }
+
+        th:nth-child(2),
+        td:nth-child(2) {
+          width: 32%;
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="brand">
+            <img src="/public/premier-league-logo-symbol.png" alt="Premier League" />
+            <h1>Premier League Predictions 26/27</h1>
+          </div>
+          <div class="hero-stats" id="heroStats"></div>
+        </div>
+      </section>
+
+      <section class="compiled">
+        <div class="wrap">
+          <div class="table-shell">
+            <div class="compiled-head">
+              <span>Pos</span>
+              <span>Manager</span>
+              <span class="right">Score</span>
+              <span class="right">Perf</span>
+              <span class="right gap">Gap</span>
+            </div>
+            <div class="manager-list" id="managerList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="predictions">
+        <div class="wrap">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <p id="selectedRank"></p>
+                <h2 id="selectedName"></h2>
+              </div>
+              <div class="chips">
+                <div class="chip"><span class="chip-label">Score</span><span class="chip-value" id="selectedScore"></span></div>
+                <div class="chip"><span class="chip-label">Perfects</span><span class="chip-value" id="selectedPerfects"></span></div>
+              </div>
+            </div>
+            <div class="mobile-table-head mobile-cards">
+              <span>Predicted</span>
+              <span>Team</span>
+              <span class="right">Actual</span>
+              <span class="right">Score</span>
+            </div>
+            <div class="mobile-cards" id="pickCards"></div>
+            <table class="desktop-table">
+              <thead>
+                <tr>
+                  <th>Predicted</th>
+                  <th>Team</th>
+                  <th>Actual Position</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody id="pickRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="standings">
+        <div class="wrap">
+          <div class="live-panel">
+            <div class="live-head">
+              <h2 class="live-title">LIVE STANDINGS</h2>
+            </div>
+            <div class="mobile-live-head mobile-cards">
+              <span>Pos</span>
+              <span>Team</span>
+              <span class="right">W</span>
+              <span class="right">D</span>
+              <span class="right">L</span>
+              <span class="right">Pts</span>
+              <span class="right">GD</span>
+            </div>
+            <div class="mobile-cards" id="liveCards"></div>
+            <table class="desktop-table">
+              <thead>
+                <tr>
+                  <th>Position</th>
+                  <th>Team</th>
+                  <th>W</th>
+                  <th>D</th>
+                  <th>L</th>
+                  <th>Points</th>
+                  <th>GD</th>
+                </tr>
+              </thead>
+              <tbody id="liveRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="rules">
+        <div class="wrap">
+          <div class="live-panel">
+            <div class="live-head">
+              <h2 class="live-title">RULES</h2>
+            </div>
+            <div style="display:grid;gap:10px;padding:14px;color:var(--purple);font-weight:900;text-transform:uppercase">
+              <div style="background:var(--green);padding:13px">LOWEST SCORE WINS</div>
+              <div style="background:var(--cyan);padding:13px">SCORE = Difference between predicted position and actual position</div>
+              <div style="background:var(--yellow);padding:13px">PERFECT PREDICTION = -5pts</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const teams = [
+        "Arsenal", "Manchester City", "Manchester United", "Aston Villa", "Liverpool",
+        "AFC Bournemouth", "Sunderland", "Brighton & Hove Albion", "Brentford", "Chelsea",
+        "Fulham", "Newcastle United", "Everton", "Leeds United", "Crystal Palace",
+        "Nottingham Forest", "Tottenham Hotspur", "West Ham United", "Burnley", "Wolverhampton Wanderers"
+      ];
+      const actualTable = teams.map((team, index) => ({
+        position: index + 1, team, played: 0, won: 0, drawn: 0, lost: 0,
+        goalsFor: 0, goalsAgainst: 0, goalDifference: 0, points: 0
+      }));
+      const colors = ["#00ff85", "#05f0ff", "#ff2882", "#ebff00", "#b6f79f", "#bdd2f0", "#d9a2e8", "#ffad94"];
+      const currentlyPlaying = new Set(["Arsenal", "Manchester City"]);
+      const managers = Array.from({ length: 40 }, (_, index) => ({
+        name: `Manager #${index + 1}`,
+        color: colors[index % colors.length],
+        picks: teams.map((_, teamIndex) => teams[(teamIndex + (index * 3)) % teams.length])
+      }));
+      const positionByTeam = new Map(actualTable.map((row) => [row.team, row.position]));
+      let selectedName = "Manager #1";
+
+      function ordinal(value) {
+        const suffix = value % 10 === 1 && value !== 11 ? "st" : value % 10 === 2 && value !== 12 ? "nd" : value % 10 === 3 && value !== 13 ? "rd" : "th";
+        return `${value}${suffix}`;
+      }
+
+      function scorePick(predicted, actual) {
+        return predicted === actual ? -5 : Math.abs(predicted - actual);
+      }
+
+      function scoreClass(score) {
+        if (score === -5) return "perfect";
+        return "";
+      }
+
+      function result(manager) {
+        const rows = manager.picks.map((team, index) => {
+          const predicted = index + 1;
+          const actual = positionByTeam.get(team) || predicted;
+          return { predicted, team, actual, score: scorePick(predicted, actual) };
+        });
+        return {
+          ...manager,
+          rows,
+          score: rows.reduce((total, row) => total + row.score, 0),
+          perfects: rows.filter((row) => row.score === -5).length
+        };
+      }
+
+      function render() {
+        const results = managers.map(result).sort((a, b) => a.score - b.score || b.perfects - a.perfects);
+        const leader = results[0];
+        const selected = results.find((manager) => manager.name === selectedName) || leader;
+        const selectedRank = results.findIndex((manager) => manager.name === selected.name) + 1;
+
+        document.getElementById("heroStats").innerHTML = `
+          <div class="hero-stat"><p class="label">Leader</p><p class="value">${leader.name}</p></div>
+          <div class="hero-stat"><p class="label">Score</p><p class="value">${leader.score}</p></div>
+          <div class="hero-stat"><p class="label">Perfects</p><p class="value">${leader.perfects}</p></div>
+        `;
+        document.getElementById("managerList").innerHTML = results.map((manager, index) => `
+          <button class="manager-row ${manager.name === selected.name ? "active" : ""}" data-manager="${manager.name}">
+            <span class="num">${index + 1}</span>
+            <span class="manager-name">${manager.name}</span>
+            <span class="score">${manager.score}</span>
+            <span class="perf">${manager.perfects}</span>
+            <span class="gap">${index === 0 ? "Lead" : "+" + (manager.score - leader.score)}</span>
+          </button>
+        `).join("");
+        document.getElementById("selectedRank").textContent = `${selectedRank}/40`;
+        document.getElementById("selectedName").textContent = selected.name;
+        document.getElementById("selectedScore").textContent = selected.score;
+        document.getElementById("selectedPerfects").textContent = selected.perfects;
+
+        document.getElementById("pickCards").innerHTML = selected.rows.map((row, index) => `
+          <div class="pick-row" style="background:${index % 2 === 0 ? selected.color + "73" : selected.color + "3d"}">
+            <span class="num">${row.predicted}</span>
+            <span class="club">${row.team}</span>
+            <span class="right">${row.actual}</span>
+            <span class="right ${scoreClass(row.score)}">${row.score}</span>
+          </div>
+        `).join("");
+        document.getElementById("pickRows").innerHTML = selected.rows.map((row, index) => `
+          <tr style="background:${index % 2 === 0 ? selected.color + "73" : selected.color + "3d"}">
+            <td>${row.predicted}</td><td>${row.team}</td><td>${row.actual}</td><td class="${scoreClass(row.score)}">${row.score}</td>
+          </tr>
+        `).join("");
+
+        document.getElementById("liveCards").innerHTML = actualTable.map((row) => `
+          ${row.position === 18 ? '<div class="relegation-line" aria-label="Relegation line"></div>' : ''}
+          <div class="live-card ${currentlyPlaying.has(row.team) ? "playing" : ""}">
+            <div class="live-main"><span class="num">${row.position}</span><span class="club">${row.team}</span><span class="right">${row.won}</span><span class="right">${row.drawn}</span><span class="right">${row.lost}</span><span class="score">${row.points}</span><span class="right">${row.goalDifference}</span></div>
+          </div>
+        `).join("");
+        document.getElementById("liveRows").innerHTML = actualTable.map((row) => `
+          ${row.position === 18 ? '<tr class="relegation-row" aria-label="Relegation line"><td colspan="7"></td></tr>' : ''}
+          <tr class="${currentlyPlaying.has(row.team) ? "playing" : ""}"><td>${row.position}</td><td>${row.team}</td><td>${row.won}</td><td>${row.drawn}</td><td>${row.lost}</td><td>${row.points}</td><td>${row.goalDifference}</td></tr>
+        `).join("");
+
+        document.querySelectorAll("[data-manager]").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedName = button.dataset.manager;
+            render();
+          });
+        });
+      }
+
+      render();
+    </script>
+  </body>
+</html>
