@@ -187,6 +187,16 @@
         color: var(--purple);
       }
 
+      .plain-section-title {
+        margin: 0 0 12px;
+        padding: 13px 14px;
+        background: var(--purple);
+        color: white;
+        font-size: clamp(24px, 7vw, 44px);
+        line-height: 0.95;
+        text-transform: uppercase;
+      }
+
       .table-shell {
         overflow: hidden;
         background: white;
@@ -271,6 +281,40 @@
         background:
           linear-gradient(135deg, rgb(255 255 255 / 18%) 0 10%, transparent 10% 20%, rgb(255 255 255 / 10%) 20% 30%, transparent 30%),
           var(--pink);
+      }
+
+      .manager-picker {
+        background: var(--purple);
+        color: white;
+      }
+
+      .picker-panel {
+        display: grid;
+        gap: 10px;
+        background: var(--yellow);
+        color: var(--purple);
+        padding: 12px;
+        box-shadow: 8px 8px 0 var(--cyan);
+      }
+
+      .picker-label {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .manager-select {
+        width: 100%;
+        min-height: 54px;
+        border: 4px solid var(--purple);
+        background: white;
+        color: var(--purple);
+        padding: 0 14px;
+        font: inherit;
+        font-size: 20px;
+        font-weight: 900;
       }
 
       .panel {
@@ -490,6 +534,13 @@
 
         .hero-stat:first-child {
           grid-column: auto;
+        }
+
+        .picker-panel {
+          grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+          align-items: center;
+          padding: 16px;
+          box-shadow: 12px 12px 0 var(--cyan);
         }
 
         .panel-head {
@@ -716,6 +767,15 @@
         </div>
       </section>
 
+      <section class="manager-picker">
+        <div class="wrap">
+          <div class="picker-panel">
+            <label class="picker-label" for="managerSelect">Select manager</label>
+            <select class="manager-select" id="managerSelect" aria-label="Select manager"></select>
+          </div>
+        </div>
+      </section>
+
       <section class="predictions">
         <div class="wrap">
           <div class="panel">
@@ -753,6 +813,7 @@
 
       <section class="standings">
         <div class="wrap">
+          <h2 class="plain-section-title">LIVE TABLE</h2>
           <div class="live-panel">
             <div class="mobile-live-head mobile-cards">
               <span>Pos</span>
@@ -784,6 +845,7 @@
 
       <section class="rules">
         <div class="wrap">
+          <h2 class="plain-section-title">RULES</h2>
           <div class="live-panel">
             <div class="rules-grid">
               <div class="rule-card">LOWEST SCORE WINS</div>
@@ -864,6 +926,11 @@
             <span class="gap">${index === 0 ? "Lead" : "+" + (manager.score - leader.score)}</span>
           </button>
         `).join("");
+        document.getElementById("managerSelect").innerHTML = results.map((manager, index) => `
+          <option value="${manager.name}" ${manager.name === selected.name ? "selected" : ""}>
+            ${index + 1}. ${manager.name} - ${manager.score} pts, ${manager.perfects} perfects
+          </option>
+        `).join("");
         document.getElementById("selectedRank").textContent = `${selectedRank}/40`;
         document.getElementById("selectedName").textContent = selected.name;
         document.getElementById("selectedScore").textContent = selected.score;
@@ -900,6 +967,10 @@
             render();
           });
         });
+        document.getElementById("managerSelect").onchange = (event) => {
+          selectedName = event.target.value;
+          render();
+        };
       }
 
       render();
