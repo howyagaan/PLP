@@ -33,12 +33,24 @@ const pl = {
   yellow: "#ebff00",
 };
 
+const pastResults = [
+  { position: 1, player: "Havi", score: 56, perfects: 4, color: "#ffad94" },
+  { position: 2, player: "Blue", score: 63, perfects: 3, color: "#8fc2f2" },
+  { position: 3, player: "Nic", score: 64, perfects: 2, color: "#ffe89b" },
+  { position: 4, player: "Tom", score: 83, perfects: 1, color: "#d9a2e8" },
+  { position: 5, player: "Austin", score: 92, perfects: 0, color: "#b6f79f" },
+];
+
 function scoreClass(score: number) {
   if (score === -5) return "text-[#008f4c]";
   return "text-[#37003c]";
 }
 
-const currentlyPlayingTeams = new Set(["Arsenal", "Manchester City"]);
+const currentlyPlayingTeams = new Set<string>();
+
+function isCurrentlyPlaying(row: TeamStanding) {
+  return Boolean(row.isPlaying || currentlyPlayingTeams.has(row.team));
+}
 
 function ManagerRow({
   manager,
@@ -208,7 +220,7 @@ export default function Home() {
           <div className="flex flex-wrap items-end justify-between gap-3 bg-[#37003c] px-4 py-4 text-white">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#00ff85]">
-                {selectedRank}/40
+                {selectedRank}/{results.length}
               </p>
               <h2 className="break-words text-4xl font-black leading-none sm:text-5xl">
                 {selected.name}
@@ -317,14 +329,16 @@ export default function Home() {
                 ) : null}
                 <div
                   className={`p-3 ${
-                    currentlyPlayingTeams.has(row.team)
+                    isCurrentlyPlaying(row)
                       ? "bg-[#ebff00] shadow-[inset_6px_0_0_#ff2882]"
                       : "bg-[#05f0ff]/20"
                   }`}
                 >
                   <div className="grid grid-cols-[34px_minmax(0,1fr)_30px_30px_30px_38px_34px] items-center gap-2 text-xs font-black">
                     <span className="text-lg tabular-nums">{row.position}</span>
-                    <span className="min-w-0 break-words leading-tight">{row.team}</span>
+                    <span className="min-w-0 break-words text-base leading-none">
+                      {row.team}
+                    </span>
                     <span className="text-right tabular-nums">{row.won}</span>
                     <span className="text-right tabular-nums">{row.drawn}</span>
                     <span className="text-right tabular-nums">{row.lost}</span>
@@ -366,7 +380,7 @@ export default function Home() {
                   ) : null}
                   <tr
                     className={
-                      currentlyPlayingTeams.has(row.team)
+                      isCurrentlyPlaying(row)
                         ? "bg-[#ebff00]"
                         : "odd:bg-white even:bg-[#05f0ff]/20"
                     }
@@ -374,7 +388,9 @@ export default function Home() {
                     <td className="px-3 py-3 text-right text-lg font-black tabular-nums">
                       {row.position}
                     </td>
-                    <td className="px-3 py-3 font-black">{row.team}</td>
+                    <td className="px-3 py-3 text-xl font-black leading-tight">
+                      {row.team}
+                    </td>
                     <td className="px-3 py-3 text-right tabular-nums">{row.won}</td>
                     <td className="px-3 py-3 text-right tabular-nums">{row.drawn}</td>
                     <td className="px-3 py-3 text-right tabular-nums">{row.lost}</td>
@@ -387,6 +403,50 @@ export default function Home() {
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section className="bg-[#00ff85] bg-[linear-gradient(90deg,rgb(55_0_60_/_0.12)_1px,transparent_1px)] bg-[length:32px_32px] px-4 py-6 text-[#37003c] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-3 bg-[#37003c] px-4 py-3 text-3xl font-black leading-none text-white sm:text-4xl">
+            25/26 Results
+          </h2>
+          <div className="overflow-hidden bg-white shadow-[9px_9px_0_#ff2882]">
+            <table className="w-full table-fixed border-collapse text-[#37003c]">
+              <thead>
+                <tr>
+                  {["Position", "Player", "Score", "Perfects"].map((heading) => (
+                    <th
+                      key={heading}
+                      className={`bg-[#37003c] px-2.5 py-3 text-[10px] font-black uppercase tracking-[0.1em] text-white sm:px-3 ${
+                        heading === "Player" ? "text-left" : "text-right"
+                      }`}
+                    >
+                      {heading}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {pastResults.map((row, index) => (
+                  <tr key={row.player} className={index % 2 === 0 ? "bg-white" : "bg-[#05f0ff]/15"}>
+                    <td className="w-[22%] border-b-2 border-[#37003c]/10 px-2.5 py-3 text-right text-lg font-black leading-none tabular-nums sm:px-3">
+                      {row.position}
+                    </td>
+                    <td className="w-[32%] border-b-2 border-[#37003c]/10 px-2.5 py-3 text-left text-lg font-black leading-none sm:px-3">
+                      {row.player}
+                    </td>
+                    <td className="w-[23%] border-b-2 border-[#37003c]/10 px-2.5 py-3 text-right text-lg font-black leading-none tabular-nums sm:px-3">
+                      {row.score}
+                    </td>
+                    <td className="w-[23%] border-b-2 border-[#37003c]/10 px-2.5 py-3 text-right text-lg font-black leading-none tabular-nums sm:px-3">
+                      {row.perfects}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 

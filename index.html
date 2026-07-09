@@ -197,6 +197,10 @@
         text-transform: uppercase;
       }
 
+      .results-title {
+        text-transform: none;
+      }
+
       .table-shell {
         overflow: hidden;
         background: white;
@@ -422,6 +426,13 @@
         color: var(--purple);
       }
 
+      .past-results {
+        background:
+          linear-gradient(90deg, rgb(55 0 60 / 12%) 1px, transparent 1px) 0 0 / 32px 32px,
+          var(--green);
+        color: var(--purple);
+      }
+
       .live-panel {
         overflow: hidden;
         background: white;
@@ -450,6 +461,13 @@
         font-size: 11px;
       }
 
+      .live-main .club {
+        min-width: 0;
+        font-size: 16px;
+        line-height: 1.02;
+        overflow-wrap: anywhere;
+      }
+
       .mobile-live-head {
         display: grid;
         grid-template-columns: 28px minmax(74px, 1fr) repeat(3, 24px) 30px 28px;
@@ -472,6 +490,66 @@
         border: 0;
         border-top: 5px solid #e90052;
         background: white;
+      }
+
+      .results-panel {
+        overflow: hidden;
+        background: white;
+        box-shadow: 8px 8px 0 var(--pink);
+      }
+
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        color: var(--purple);
+      }
+
+      .results-table th,
+      .results-table td {
+        padding: 12px 10px;
+        border: 0;
+        border-bottom: 2px solid rgb(55 0 60 / 10%);
+        font-weight: 900;
+      }
+
+      .results-table th {
+        background: var(--purple);
+        color: white;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-align: left;
+        text-transform: uppercase;
+      }
+
+      .results-table td {
+        background: white;
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .results-table th:nth-child(1),
+      .results-table td:nth-child(1) {
+        width: 22%;
+        text-align: right;
+      }
+
+      .results-table th:nth-child(2),
+      .results-table td:nth-child(2) {
+        width: 32%;
+        text-align: left;
+      }
+
+      .results-table th:nth-child(3),
+      .results-table td:nth-child(3),
+      .results-table th:nth-child(4),
+      .results-table td:nth-child(4) {
+        width: 23%;
+        text-align: right;
+      }
+
+      .results-table tbody tr:nth-child(even) td {
+        background: rgb(5 240 255 / 14%);
       }
 
       .desktop-table {
@@ -586,6 +664,12 @@
         .live-panel th {
           background: var(--pink);
           color: white;
+        }
+
+        .live-panel .desktop-table td:nth-child(2) {
+          font-size: 20px;
+          line-height: 1.05;
+          overflow-wrap: anywhere;
         }
 
         th:nth-child(2),
@@ -729,6 +813,10 @@
           font-size: 10px;
         }
 
+        .live-main .club {
+          font-size: 15px;
+        }
+
         .mobile-table-head,
         .pick-row {
           grid-template-columns: 48px minmax(0, 1fr) 38px 35px;
@@ -843,6 +931,56 @@
         </div>
       </section>
 
+      <section class="past-results">
+        <div class="wrap">
+          <h2 class="plain-section-title results-title">25/26 Results</h2>
+          <div class="results-panel">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Position</th>
+                  <th>Player</th>
+                  <th>Score</th>
+                  <th>Perfects</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Havi</td>
+                  <td>56</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Blue</td>
+                  <td>63</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Nic</td>
+                  <td>64</td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Tom</td>
+                  <td>83</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>Austin</td>
+                  <td>92</td>
+                  <td>0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section class="rules">
         <div class="wrap">
           <h2 class="plain-section-title">RULES</h2>
@@ -859,24 +997,47 @@
 
     <script>
       const teams = [
-        "Arsenal", "Manchester City", "Manchester United", "Aston Villa", "Liverpool",
-        "AFC Bournemouth", "Sunderland", "Brighton & Hove Albion", "Brentford", "Chelsea",
-        "Fulham", "Newcastle United", "Everton", "Leeds United", "Crystal Palace",
-        "Nottingham Forest", "Tottenham Hotspur", "West Ham United", "Burnley", "Wolverhampton Wanderers"
+        "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton & Hove Albion",
+        "Chelsea", "Coventry City", "Crystal Palace", "Everton", "Fulham",
+        "Hull City", "Ipswich Town", "Leeds United", "Liverpool", "Manchester City",
+        "Manchester United", "Newcastle United", "Nottingham Forest", "Sunderland", "Tottenham Hotspur"
       ];
       const actualTable = teams.map((team, index) => ({
         position: index + 1, team, played: 0, won: 0, drawn: 0, lost: 0,
-        goalsFor: 0, goalsAgainst: 0, goalDifference: 0, points: 0
+        goalsFor: 0, goalsAgainst: 0, goalDifference: 0, points: 0, isPlaying: false
       }));
       const colors = ["#00ff85", "#05f0ff", "#ff2882", "#ebff00", "#b6f79f", "#bdd2f0", "#d9a2e8", "#ffad94"];
-      const currentlyPlaying = new Set(["Arsenal", "Manchester City"]);
-      const managers = Array.from({ length: 40 }, (_, index) => ({
-        name: `Manager #${index + 1}`,
-        color: colors[index % colors.length],
-        picks: teams.map((_, teamIndex) => teams[(teamIndex + (index * 3)) % teams.length])
-      }));
+      const liveMatchTeams = new Set([]);
+      const managers = [
+        {
+          name: "Nic",
+          color: colors[0],
+          picks: [
+            "Manchester City",
+            "Manchester United",
+            "Arsenal",
+            "Tottenham Hotspur",
+            "Chelsea",
+            "Liverpool",
+            "Aston Villa",
+            "Newcastle United",
+            "Fulham",
+            "Bournemouth",
+            "Brighton & Hove Albion",
+            "Brentford",
+            "Crystal Palace",
+            "Sunderland",
+            "Nottingham Forest",
+            "Leeds United",
+            "Everton",
+            "Coventry City",
+            "Ipswich Town",
+            "Hull City"
+          ]
+        }
+      ];
       const positionByTeam = new Map(actualTable.map((row) => [row.team, row.position]));
-      let selectedName = "Manager #1";
+      let selectedName = managers[0].name;
 
       function ordinal(value) {
         const suffix = value % 10 === 1 && value !== 11 ? "st" : value % 10 === 2 && value !== 12 ? "nd" : value % 10 === 3 && value !== 13 ? "rd" : "th";
@@ -890,6 +1051,10 @@
       function scoreClass(score) {
         if (score === -5) return "perfect";
         return "";
+      }
+
+      function isCurrentlyPlaying(row) {
+        return row.isPlaying || liveMatchTeams.has(row.team);
       }
 
       function result(manager) {
@@ -931,7 +1096,7 @@
             ${index + 1}. ${manager.name} - ${manager.score} pts, ${manager.perfects} perfects
           </option>
         `).join("");
-        document.getElementById("selectedRank").textContent = `${selectedRank}/40`;
+        document.getElementById("selectedRank").textContent = `${selectedRank}/${results.length}`;
         document.getElementById("selectedName").textContent = selected.name;
         document.getElementById("selectedScore").textContent = selected.score;
         document.getElementById("selectedPerfects").textContent = selected.perfects;
@@ -952,13 +1117,13 @@
 
         document.getElementById("liveCards").innerHTML = actualTable.map((row) => `
           ${row.position === 18 ? '<div class="relegation-line" aria-label="Relegation line"></div>' : ''}
-          <div class="live-card ${currentlyPlaying.has(row.team) ? "playing" : ""}">
+          <div class="live-card ${isCurrentlyPlaying(row) ? "playing" : ""}">
             <div class="live-main"><span class="num">${row.position}</span><span class="club">${row.team}</span><span class="right">${row.won}</span><span class="right">${row.drawn}</span><span class="right">${row.lost}</span><span class="score">${row.points}</span><span class="right">${row.goalDifference}</span></div>
           </div>
         `).join("");
         document.getElementById("liveRows").innerHTML = actualTable.map((row) => `
           ${row.position === 18 ? '<tr class="relegation-row" aria-label="Relegation line"><td colspan="7"></td></tr>' : ''}
-          <tr class="${currentlyPlaying.has(row.team) ? "playing" : ""}"><td>${row.position}</td><td>${row.team}</td><td>${row.won}</td><td>${row.drawn}</td><td>${row.lost}</td><td>${row.points}</td><td>${row.goalDifference}</td></tr>
+          <tr class="${isCurrentlyPlaying(row) ? "playing" : ""}"><td>${row.position}</td><td>${row.team}</td><td>${row.won}</td><td>${row.drawn}</td><td>${row.lost}</td><td>${row.points}</td><td>${row.goalDifference}</td></tr>
         `).join("");
 
         document.querySelectorAll("[data-manager]").forEach((button) => {

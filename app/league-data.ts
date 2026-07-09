@@ -9,6 +9,7 @@ export type TeamStanding = {
   goalsAgainst: number;
   goalDifference: number;
   points: number;
+  isPlaying?: boolean;
 };
 
 export type ManagerName = string;
@@ -32,25 +33,25 @@ export type ManagerResult = ManagerSheet & {
 
 export const sampleActualTable: TeamStanding[] = [
   "Arsenal",
+  "Aston Villa",
+  "Bournemouth",
+  "Brentford",
+  "Brighton & Hove Albion",
+  "Chelsea",
+  "Coventry City",
+  "Crystal Palace",
+  "Everton",
+  "Fulham",
+  "Hull City",
+  "Ipswich Town",
+  "Leeds United",
+  "Liverpool",
   "Manchester City",
   "Manchester United",
-  "Aston Villa",
-  "Liverpool",
-  "AFC Bournemouth",
-  "Sunderland",
-  "Brighton & Hove Albion",
-  "Brentford",
-  "Chelsea",
-  "Fulham",
   "Newcastle United",
-  "Everton",
-  "Leeds United",
-  "Crystal Palace",
   "Nottingham Forest",
+  "Sunderland",
   "Tottenham Hotspur",
-  "West Ham United",
-  "Burnley",
-  "Wolverhampton Wanderers",
 ].map((team, index) => ({
   position: index + 1,
   team,
@@ -62,6 +63,7 @@ export const sampleActualTable: TeamStanding[] = [
   goalsAgainst: 0,
   goalDifference: 0,
   points: 0,
+  isPlaying: false,
 }));
 
 const managerColors = [
@@ -75,26 +77,49 @@ const managerColors = [
   "#ffad94",
 ];
 
-const upcomingSeasonTemplate = sampleActualTable.map((standing) => standing.team);
-
-function rotatePicks(offset: number) {
-  return upcomingSeasonTemplate.map(
-    (_, index) => upcomingSeasonTemplate[(index + offset) % upcomingSeasonTemplate.length],
-  );
-}
-
-export const managerSheets: ManagerSheet[] = Array.from({ length: 40 }, (_, index) => ({
-  name: `Manager #${index + 1}`,
-  color: managerColors[index % managerColors.length],
-  picks: rotatePicks((index * 3) % upcomingSeasonTemplate.length),
-}));
+export const managerSheets: ManagerSheet[] = [
+  {
+    name: "Nic",
+    color: managerColors[0],
+    picks: [
+      "Manchester City",
+      "Manchester United",
+      "Arsenal",
+      "Tottenham Hotspur",
+      "Chelsea",
+      "Liverpool",
+      "Aston Villa",
+      "Newcastle United",
+      "Fulham",
+      "Bournemouth",
+      "Brighton & Hove Albion",
+      "Brentford",
+      "Crystal Palace",
+      "Sunderland",
+      "Nottingham Forest",
+      "Leeds United",
+      "Everton",
+      "Coventry City",
+      "Ipswich Town",
+      "Hull City",
+    ],
+  },
+];
 
 const aliases = new Map([
-  ["afc bournemouth", "AFC Bournemouth"],
-  ["bournemouth", "AFC Bournemouth"],
+  ["afc bournemouth", "Bournemouth"],
+  ["bournemouth", "Bournemouth"],
   ["brighton and hove albion", "Brighton & Hove Albion"],
   ["brighton hove albion", "Brighton & Hove Albion"],
   ["brighton", "Brighton & Hove Albion"],
+  ["coventry", "Coventry City"],
+  ["coventry city", "Coventry City"],
+  ["hull", "Hull City"],
+  ["hull city", "Hull City"],
+  ["ipswich", "Ipswich Town"],
+  ["ipswich town", "Ipswich Town"],
+  ["leeds", "Leeds United"],
+  ["leeds united", "Leeds United"],
   ["manchester united", "Manchester United"],
   ["man utd", "Manchester United"],
   ["man united", "Manchester United"],

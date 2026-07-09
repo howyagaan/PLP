@@ -123,6 +123,7 @@ function normalizeStanding(
       standing.points,
       detailNumber(standing.details, ["points"]),
     ),
+    isPlaying: false,
   };
 }
 
