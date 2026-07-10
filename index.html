@@ -354,6 +354,62 @@
         overflow-wrap: anywhere;
       }
 
+      .selected-name-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .buy-in-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        width: fit-content;
+        min-height: 34px;
+        padding: 6px 7px 6px 6px;
+        border: 2px solid white;
+        background: #008cff;
+        color: white;
+        box-shadow: 4px 4px 0 var(--green);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1;
+        text-transform: uppercase;
+        transition: transform 160ms ease, box-shadow 160ms ease;
+      }
+
+      .buy-in-button:hover,
+      .buy-in-button:focus-visible {
+        transform: translate(-1px, -1px);
+        box-shadow: 6px 6px 0 var(--green);
+        outline: 0;
+      }
+
+      .buy-in-button img {
+        width: 22px;
+        height: 22px;
+        object-fit: cover;
+        background: #008cff;
+      }
+
+      .buy-in-copy {
+        white-space: nowrap;
+      }
+
+      .buy-in-price {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        padding: 0 5px;
+        background: white;
+        color: #008cff;
+        font-size: 15px;
+        font-style: italic;
+        letter-spacing: -0.02em;
+      }
+
       .chips {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -870,7 +926,14 @@
             <div class="panel-head">
               <div>
                 <p id="selectedRank"></p>
-                <h2 id="selectedName"></h2>
+                <div class="selected-name-row">
+                  <h2 id="selectedName"></h2>
+                  <a class="buy-in-button" id="buyInButton" href="https://venmo.com/u/Nicholas-Hamilton45" target="_blank" rel="noopener noreferrer" aria-label="Tap to buy in on Venmo for $27">
+                    <img src="/public/venmo-logo.png" alt="Venmo" />
+                    <span class="buy-in-copy">Tap to buy-in!</span>
+                    <span class="buy-in-price">$27</span>
+                  </a>
+                </div>
               </div>
               <div class="chips">
                 <div class="chip"><span class="chip-label">Score</span><span class="chip-value" id="selectedScore"></span></div>
@@ -1012,6 +1075,7 @@
         {
           name: "Nic",
           color: colors[0],
+          paid: false,
           picks: [
             "Manchester City",
             "Manchester United",
@@ -1100,6 +1164,7 @@
         document.getElementById("selectedName").textContent = selected.name;
         document.getElementById("selectedScore").textContent = selected.score;
         document.getElementById("selectedPerfects").textContent = selected.perfects;
+        document.getElementById("buyInButton").hidden = Boolean(selected.paid);
 
         document.getElementById("pickCards").innerHTML = selected.rows.map((row, index) => `
           <div class="pick-row" style="background:${index % 2 === 0 ? selected.color + "73" : selected.color + "3d"}">

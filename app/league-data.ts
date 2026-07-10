@@ -17,6 +17,7 @@ export type ManagerName = string;
 export type ManagerSheet = {
   name: ManagerName;
   color: string;
+  paid?: boolean;
   picks: string[];
 };
 
@@ -81,6 +82,7 @@ export const managerSheets: ManagerSheet[] = [
   {
     name: "Nic",
     color: managerColors[0],
+    paid: false,
     picks: [
       "Manchester City",
       "Manchester United",

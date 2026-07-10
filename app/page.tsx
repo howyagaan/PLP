@@ -222,9 +222,30 @@ export default function Home() {
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#00ff85]">
                 {selectedRank}/{results.length}
               </p>
-              <h2 className="break-words text-4xl font-black leading-none sm:text-5xl">
-                {selected.name}
-              </h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="break-words text-4xl font-black leading-none sm:text-5xl">
+                  {selected.name}
+                </h2>
+                {!selected.paid ? (
+                  <a
+                    href="https://venmo.com/u/Nicholas-Hamilton45"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Tap to buy in on Venmo for 27 dollars"
+                    className="inline-flex min-h-8 items-center gap-1.5 border-2 border-white bg-[#008cff] py-1 pl-1 pr-1.5 text-[11px] font-black uppercase leading-none text-white no-underline shadow-[4px_4px_0_#00ff85] transition hover:-translate-x-px hover:-translate-y-px hover:shadow-[6px_6px_0_#00ff85] focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#ebff00]"
+                  >
+                    <img
+                      src="/venmo-logo.png"
+                      alt="Venmo"
+                      className="h-[22px] w-[22px] object-cover"
+                    />
+                    <span className="whitespace-nowrap">Tap to buy-in!</span>
+                    <span className="inline-flex min-h-[22px] items-center bg-white px-1.5 text-[15px] italic tracking-tight text-[#008cff]">
+                      $27
+                    </span>
+                  </a>
+                ) : null}
+              </div>
             </div>
             <div className="flex gap-2 text-[#37003c]">
               <span className="bg-[#00ff85] px-3 py-2 text-center font-black">
