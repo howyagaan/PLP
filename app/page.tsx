@@ -217,12 +217,12 @@ export default function Home() {
 
       <section className="bg-[#ff2882] px-4 py-6 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl overflow-hidden bg-white text-[#37003c] shadow-[9px_9px_0_#05f0ff]">
-          <div className="flex flex-wrap items-end justify-between gap-3 bg-[#37003c] px-4 py-4 text-white">
-            <div>
+          <div className="relative flex flex-wrap items-end justify-between gap-3 bg-[#37003c] px-4 py-4 text-white">
+            <div className="min-h-[46px] pr-32 sm:min-h-0 sm:pr-0">
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#00ff85]">
                 {selectedRank}/{results.length}
               </p>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="block sm:flex sm:flex-wrap sm:items-center sm:gap-5">
                 <h2 className="break-words text-4xl font-black leading-none sm:text-5xl">
                   {selected.name}
                 </h2>
@@ -232,15 +232,15 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Tap to buy in on Venmo for 27 dollars"
-                    className="inline-flex min-h-8 items-center gap-1.5 border-2 border-white bg-[#008cff] py-1 pl-1 pr-1.5 text-[11px] font-black uppercase leading-none text-white no-underline shadow-[4px_4px_0_#00ff85] transition hover:-translate-x-px hover:-translate-y-px hover:shadow-[6px_6px_0_#00ff85] focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#ebff00]"
+                    className="absolute right-3 top-3 inline-flex min-h-[30px] items-center gap-1 border-2 border-white bg-[#008cff] py-1 pl-1 pr-1 text-[9px] font-black uppercase leading-none text-white no-underline shadow-[4px_4px_0_#00ff85] transition hover:-translate-x-px hover:-translate-y-px hover:shadow-[6px_6px_0_#00ff85] focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#ebff00] sm:static sm:ml-2 sm:min-h-8 sm:gap-1.5 sm:py-1 sm:pl-1 sm:pr-1.5 sm:text-[11px]"
                   >
                     <img
                       src="/venmo-logo.png"
                       alt="Venmo"
-                      className="h-[22px] w-[22px] object-cover"
+                      className="h-5 w-5 object-cover sm:h-[22px] sm:w-[22px]"
                     />
                     <span className="whitespace-nowrap">Tap to buy-in!</span>
-                    <span className="inline-flex min-h-[22px] items-center bg-white px-1.5 text-[15px] italic tracking-tight text-[#008cff]">
+                    <span className="inline-flex min-h-5 items-center bg-white px-1 text-[13px] italic tracking-tight text-[#008cff] sm:min-h-[22px] sm:px-1.5 sm:text-[15px]">
                       $27
                     </span>
                   </a>

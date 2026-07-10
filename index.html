@@ -329,12 +329,18 @@
       }
 
       .panel-head {
+        position: relative;
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         gap: 14px;
         padding: 14px;
         background: var(--purple);
         color: white;
+      }
+
+      .selected-title-block {
+        min-height: 46px;
+        padding-right: 124px;
       }
 
       .panel-head p {
@@ -355,25 +361,25 @@
       }
 
       .selected-name-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
+        display: block;
       }
 
       .buy-in-button {
+        position: absolute;
+        top: 12px;
+        right: 12px;
         display: inline-flex;
         align-items: center;
-        gap: 7px;
+        gap: 5px;
         width: fit-content;
-        min-height: 34px;
-        padding: 6px 7px 6px 6px;
+        min-height: 30px;
+        padding: 4px 5px 4px 4px;
         border: 2px solid white;
         background: #008cff;
         color: white;
         box-shadow: 4px 4px 0 var(--green);
         text-decoration: none;
-        font-size: 11px;
+        font-size: 9px;
         font-weight: 900;
         line-height: 1;
         text-transform: uppercase;
@@ -388,8 +394,8 @@
       }
 
       .buy-in-button img {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
         object-fit: cover;
         background: #008cff;
       }
@@ -401,11 +407,11 @@
       .buy-in-price {
         display: inline-flex;
         align-items: center;
-        min-height: 22px;
-        padding: 0 5px;
+        min-height: 20px;
+        padding: 0 4px;
         background: white;
         color: #008cff;
-        font-size: 15px;
+        font-size: 13px;
         font-style: italic;
         letter-spacing: -0.02em;
       }
@@ -683,6 +689,38 @@
           padding: 18px;
         }
 
+        .selected-title-block {
+          min-height: 0;
+          padding-right: 0;
+        }
+
+        .selected-name-row {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 18px;
+        }
+
+        .buy-in-button {
+          position: static;
+          gap: 7px;
+          min-height: 34px;
+          margin-left: 6px;
+          padding: 6px 7px 6px 6px;
+          font-size: 11px;
+        }
+
+        .buy-in-button img {
+          width: 22px;
+          height: 22px;
+        }
+
+        .buy-in-price {
+          min-height: 22px;
+          padding: 0 5px;
+          font-size: 15px;
+        }
+
         .compiled-head,
         .manager-row {
           grid-template-columns: 58px minmax(0, 1fr) 82px 82px 82px;
@@ -896,7 +934,6 @@
         <div class="wrap">
           <div class="section-bar">
             <h2 class="section-title">Manager Table</h2>
-            <p class="section-count">40 Managers</p>
           </div>
           <div class="table-shell">
             <div class="compiled-head">
@@ -924,7 +961,7 @@
         <div class="wrap">
           <div class="panel">
             <div class="panel-head">
-              <div>
+              <div class="selected-title-block">
                 <p id="selectedRank"></p>
                 <div class="selected-name-row">
                   <h2 id="selectedName"></h2>
