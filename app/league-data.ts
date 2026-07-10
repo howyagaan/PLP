@@ -82,7 +82,7 @@ export const managerSheets: ManagerSheet[] = [
   {
     name: "Nic",
     color: managerColors[0],
-    paid: false,
+    paid: true,
     picks: [
       "Manchester City",
       "Manchester United",
