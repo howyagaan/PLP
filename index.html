@@ -965,7 +965,7 @@
                 <p id="selectedRank"></p>
                 <div class="selected-name-row">
                   <h2 id="selectedName"></h2>
-                  <a class="buy-in-button" id="buyInButton" href="https://venmo.com/u/Nicholas-Hamilton45" target="_blank" rel="noopener noreferrer" aria-label="Tap to buy in on Venmo for $27">
+                  <a class="buy-in-button" id="buyInButton" href="https://venmo.com/u/Nicholas-Hamilton45" data-app-url="venmo://users/Nicholas-Hamilton45" data-web-url="https://venmo.com/u/Nicholas-Hamilton45" target="_blank" rel="noopener noreferrer" aria-label="Tap to buy in on Venmo for $27">
                     <img src="/public/venmo-logo.png" alt="Venmo" />
                     <span class="buy-in-copy">Tap to buy-in!</span>
                     <span class="buy-in-price">$27</span>
@@ -1158,6 +1158,25 @@
         return row.isPlaying || liveMatchTeams.has(row.team);
       }
 
+      function isMobileDevice() {
+        return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      }
+
+      function openVenmo(event) {
+        if (!isMobileDevice()) return;
+
+        event.preventDefault();
+        const link = event.currentTarget;
+        const fallbackUrl = link.dataset.webUrl || link.href;
+        window.location.href = link.dataset.appUrl;
+
+        window.setTimeout(() => {
+          if (!document.hidden) {
+            window.location.href = fallbackUrl;
+          }
+        }, 900);
+      }
+
       function result(manager) {
         const rows = manager.picks.map((team, index) => {
           const predicted = index + 1;
@@ -1240,6 +1259,7 @@
         };
       }
 
+      document.getElementById("buyInButton").addEventListener("click", openVenmo);
       render();
     </script>
   </body>

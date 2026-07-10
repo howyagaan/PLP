@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useMemo, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, MouseEvent } from "react";
 import {
   getSortedManagerResults,
   sampleActualTable,
@@ -40,6 +40,22 @@ const pastResults = [
   { position: 4, player: "Tom", score: 83, perfects: 1, color: "#d9a2e8" },
   { position: 5, player: "Austin", score: 92, perfects: 0, color: "#b6f79f" },
 ];
+
+const venmoWebUrl = "https://venmo.com/u/Nicholas-Hamilton45";
+const venmoAppUrl = "venmo://users/Nicholas-Hamilton45";
+
+function handleVenmoClick(event: MouseEvent<HTMLAnchorElement>) {
+  if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return;
+
+  event.preventDefault();
+  window.location.href = venmoAppUrl;
+
+  window.setTimeout(() => {
+    if (!document.hidden) {
+      window.location.href = venmoWebUrl;
+    }
+  }, 900);
+}
 
 function scoreClass(score: number) {
   if (score === -5) return "text-[#008f4c]";
@@ -228,9 +244,10 @@ export default function Home() {
                 </h2>
                 {!selected.paid ? (
                   <a
-                    href="https://venmo.com/u/Nicholas-Hamilton45"
+                    href={venmoWebUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={handleVenmoClick}
                     aria-label="Tap to buy in on Venmo for 27 dollars"
                     className="absolute right-3 top-3 inline-flex min-h-[30px] items-center gap-1 border-2 border-white bg-[#008cff] py-1 pl-1 pr-1 text-[9px] font-black uppercase leading-none text-white no-underline shadow-[4px_4px_0_#00ff85] transition hover:-translate-x-px hover:-translate-y-px hover:shadow-[6px_6px_0_#00ff85] focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#ebff00] sm:static sm:ml-2 sm:min-h-8 sm:gap-1.5 sm:py-1 sm:pl-1 sm:pr-1.5 sm:text-[11px]"
                   >
