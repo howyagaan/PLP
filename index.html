@@ -386,6 +386,10 @@
         transition: transform 160ms ease, box-shadow 160ms ease;
       }
 
+      .buy-in-button[hidden] {
+        display: none;
+      }
+
       .buy-in-button:hover,
       .buy-in-button:focus-visible {
         transform: translate(-1px, -1px);
@@ -1220,7 +1224,9 @@
         document.getElementById("selectedName").textContent = selected.name;
         document.getElementById("selectedScore").textContent = selected.score;
         document.getElementById("selectedPerfects").textContent = selected.perfects;
-        document.getElementById("buyInButton").hidden = Boolean(selected.paid);
+        const buyInButton = document.getElementById("buyInButton");
+        buyInButton.hidden = Boolean(selected.paid);
+        buyInButton.style.display = selected.paid ? "none" : "";
 
         document.getElementById("pickCards").innerHTML = selected.rows.map((row, index) => `
           <div class="pick-row" style="background:${index % 2 === 0 ? selected.color + "73" : selected.color + "3d"}">
