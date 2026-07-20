@@ -77,18 +77,21 @@
 
       .brand {
         display: grid;
-        grid-template-columns: 64px minmax(0, 1fr);
-        gap: 12px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
         align-items: center;
+        justify-items: center;
+        text-align: center;
       }
 
       .brand img {
-        width: 64px;
-        height: 64px;
+        width: clamp(112px, 32vw, 176px);
+        height: clamp(112px, 32vw, 176px);
         object-fit: contain;
+        border-radius: 50%;
         background: white;
-        padding: 8px;
-        box-shadow: 6px 6px 0 var(--green);
+        padding: 14px;
+        box-shadow: 7px 7px 0 var(--green);
       }
 
       h1 {
@@ -200,6 +203,33 @@
         font-size: clamp(13px, 3.8vw, 18px);
         font-weight: 900;
         line-height: 1.15;
+        text-transform: uppercase;
+      }
+
+      .refresh-note {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        margin: 0 0 12px;
+        padding: 9px 12px;
+        background: var(--purple);
+        color: white;
+        box-shadow: 5px 5px 0 var(--cyan);
+        font-size: clamp(11px, 3.2vw, 14px);
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        line-height: 1.15;
+        text-transform: uppercase;
+      }
+
+      .refresh-note button {
+        padding: 0;
+        background: transparent;
+        color: var(--green);
+        font-weight: 900;
+        letter-spacing: inherit;
+        text-decoration: underline;
         text-transform: uppercase;
       }
 
@@ -717,22 +747,21 @@
         }
 
         .hero-grid {
-          grid-template-columns: minmax(0, 1fr) 300px;
-          align-items: end;
+          justify-items: center;
         }
 
         .brand {
-          grid-template-columns: 100px minmax(0, 1fr);
-          gap: 20px;
+          gap: 18px;
         }
 
         .brand img {
-          width: 100px;
-          height: 100px;
+          width: 190px;
+          height: 190px;
         }
 
         .hero-stats {
-          grid-template-columns: 1fr;
+          width: min(100%, 760px);
+          grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
         .hero-stat:first-child {
@@ -937,12 +966,12 @@
         }
 
         .brand {
-          grid-template-columns: 58px minmax(0, 1fr);
+          gap: 10px;
         }
 
         .brand img {
-          width: 58px;
-          height: 58px;
+          width: 112px;
+          height: 112px;
           box-shadow: 5px 5px 0 var(--green);
         }
 
@@ -1003,6 +1032,7 @@
       <section class="compiled">
         <div class="wrap">
           <p class="reveal-info" id="revealInfo" hidden></p>
+          <p class="refresh-note">If your name didn't show up right away, <button id="refreshPageButton" type="button">refresh</button> this page</p>
           <div class="section-bar">
             <h2 class="section-title">Manager Table</h2>
           </div>
@@ -1170,6 +1200,10 @@
       if (window.location.protocol === "file:") {
         document.documentElement.style.setProperty("--logo-url", 'url("public/premier-league-logo-symbol.png")');
       }
+
+      document.getElementById("refreshPageButton").addEventListener("click", () => {
+        window.location.reload();
+      });
 
       const teams = [
         "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton & Hove Albion",

@@ -62,18 +62,21 @@
 
       .brand {
         display: grid;
-        grid-template-columns: 62px minmax(0, 1fr);
-        gap: 12px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
         align-items: center;
+        justify-items: center;
+        text-align: center;
       }
 
       .brand img {
-        width: 62px;
-        height: 62px;
+        width: clamp(112px, 32vw, 176px);
+        height: clamp(112px, 32vw, 176px);
         object-fit: contain;
+        border-radius: 50%;
         background: white;
-        padding: 8px;
-        box-shadow: 6px 6px 0 var(--green);
+        padding: 14px;
+        box-shadow: 7px 7px 0 var(--green);
       }
 
       h1,
@@ -90,6 +93,8 @@
       .hero-copy {
         display: grid;
         gap: 8px;
+        justify-items: center;
+        text-align: center;
       }
 
       .hero-subtitle {
@@ -283,7 +288,6 @@
       .team-row,
       .review-row {
         display: grid;
-        grid-template-columns: 42px 30px minmax(0, 1fr);
         gap: 6px;
         align-items: center;
         min-height: 58px;
@@ -295,8 +299,13 @@
       }
 
       .team-row {
+        grid-template-columns: 42px 30px minmax(0, 1fr) 72px;
         cursor: default;
         user-select: none;
+      }
+
+      .review-row {
+        grid-template-columns: 42px 30px minmax(0, 1fr);
       }
 
       .team-row:nth-child(even),
@@ -339,6 +348,30 @@
         overflow-wrap: anywhere;
         font-size: 18px;
         line-height: 1.02;
+      }
+
+      .move-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .move-team {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 31px;
+        height: 31px;
+        background: var(--purple);
+        color: white;
+        font-size: 16px;
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .move-team:disabled {
+        cursor: not-allowed;
+        opacity: 0.28;
       }
 
       .review-panel {
@@ -476,13 +509,12 @@
         }
 
         .brand {
-          grid-template-columns: 96px minmax(0, 1fr);
           gap: 18px;
         }
 
         .brand img {
-          width: 96px;
-          height: 96px;
+          width: 190px;
+          height: 190px;
         }
 
         .form-grid {
@@ -524,13 +556,26 @@
 
         .team-row,
         .review-row {
-          grid-template-columns: 60px 36px minmax(0, 1fr);
           min-height: 64px;
           padding: 11px 14px;
         }
 
+        .team-row {
+          grid-template-columns: 60px 36px minmax(0, 1fr) 88px;
+        }
+
+        .review-row {
+          grid-template-columns: 60px 36px minmax(0, 1fr);
+        }
+
         .team-name {
           font-size: 22px;
+        }
+
+        .move-team {
+          width: 38px;
+          height: 38px;
+          font-size: 18px;
         }
 
         .primary-button {
@@ -544,12 +589,12 @@
         }
 
         .brand {
-          grid-template-columns: 56px minmax(0, 1fr);
+          gap: 10px;
         }
 
         .brand img {
-          width: 56px;
-          height: 56px;
+          width: 112px;
+          height: 112px;
         }
 
         h1 {
@@ -558,12 +603,29 @@
 
         .team-row,
         .review-row {
-          grid-template-columns: 36px 26px minmax(0, 1fr);
           gap: 5px;
+        }
+
+        .team-row {
+          grid-template-columns: 36px 24px minmax(0, 1fr) 62px;
+        }
+
+        .review-row {
+          grid-template-columns: 36px 26px minmax(0, 1fr);
         }
 
         .team-name {
           font-size: 16px;
+        }
+
+        .move-buttons {
+          gap: 4px;
+        }
+
+        .move-team {
+          width: 28px;
+          height: 28px;
+          font-size: 14px;
         }
       }
     </style>
@@ -585,7 +647,7 @@
             <img src="/public/premier-league-logo-symbol.png" onerror="this.onerror=null;this.src='public/premier-league-logo-symbol.png';" alt="Premier League" />
             <div class="hero-copy">
               <h1>Premier League Predictions 26/27</h1>
-              <p class="hero-subtitle">SIGN UP NOW</p>
+              <p class="hero-subtitle">SIGN UP PAGE</p>
               <p class="deadline-pill">Deadline: 20:00 UK, 21 Aug 2026</p>
             </div>
           </div>
@@ -624,7 +686,7 @@
           <div class="panel">
             <div class="panel-head">
               <h2>Set Your Table</h2>
-              <p>Move teams into your predicted 1st to 20th order.</p>
+              <p>Drag or move teams into your predicted 1st to 20th order.</p>
             </div>
             <div class="builder-toolbar">
               <span class="count-pill" id="managerBadge"></span>
@@ -757,8 +819,21 @@
             <span class="position">${index + 1}</span>
             <span class="drag-handle" aria-hidden="true"><span></span><span></span><span></span></span>
             <span class="team-name">${escapeHtml(team)}</span>
+            <span class="move-buttons">
+              <button class="move-team" type="button" data-direction="-1" ${index === 0 ? "disabled" : ""} aria-label="Move ${escapeHtml(team)} up">&uarr;</button>
+              <button class="move-team" type="button" data-direction="1" ${index === picks.length - 1 ? "disabled" : ""} aria-label="Move ${escapeHtml(team)} down">&darr;</button>
+            </span>
           </div>
         `).join("");
+
+        document.querySelectorAll(".move-team").forEach((button) => {
+          button.addEventListener("click", () => {
+            const row = button.closest(".team-row");
+            const index = Number(row.dataset.index);
+            const direction = Number(button.dataset.direction);
+            moveTeam(index, index + direction);
+          });
+        });
 
         document.querySelectorAll(".drag-handle").forEach((handle) => {
           handle.addEventListener("pointerdown", (event) => {
