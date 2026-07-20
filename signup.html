@@ -88,6 +88,7 @@
       h1 {
         font-size: clamp(34px, 10vw, 78px);
         line-height: 1.04;
+        text-shadow: 3px 3px 0 rgb(0 0 0 / 45%);
       }
 
       .hero-copy {
@@ -317,6 +318,11 @@
         background: var(--yellow);
         box-shadow: inset 7px 0 0 var(--pink);
         cursor: grabbing;
+      }
+
+      .team-row.last-moved {
+        background: var(--yellow);
+        box-shadow: inset 7px 0 0 var(--pink);
       }
 
       .drag-handle {
@@ -758,6 +764,7 @@
       let manager = null;
       let draggingIndex = null;
       let dragPointerId = null;
+      let lastMovedTeam = null;
       let predictionSubmitted = false;
 
       function escapeHtml(value) {
@@ -815,7 +822,7 @@
 
       function renderTeamList() {
         document.getElementById("teamList").innerHTML = picks.map((team, index) => `
-          <div class="team-row ${index === draggingIndex ? "dragging" : ""}" data-index="${index}">
+          <div class="team-row ${index === draggingIndex ? "dragging" : ""} ${team === lastMovedTeam ? "last-moved" : ""}" data-index="${index}">
             <span class="position">${index + 1}</span>
             <span class="drag-handle" aria-hidden="true"><span></span><span></span><span></span></span>
             <span class="team-name">${escapeHtml(team)}</span>
@@ -831,6 +838,7 @@
             const row = button.closest(".team-row");
             const index = Number(row.dataset.index);
             const direction = Number(button.dataset.direction);
+            lastMovedTeam = picks[index];
             moveTeam(index, index + direction);
           });
         });
@@ -841,6 +849,7 @@
             const row = handle.closest(".team-row");
             draggingIndex = Number(row.dataset.index);
             dragPointerId = event.pointerId;
+            lastMovedTeam = null;
             row.classList.add("dragging");
             event.preventDefault();
             document.body.classList.add("body-dragging");
