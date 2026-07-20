@@ -1165,7 +1165,7 @@
         "Hull City", "Ipswich Town", "Leeds United", "Liverpool", "Manchester City",
         "Manchester United", "Newcastle United", "Nottingham Forest", "Sunderland", "Tottenham Hotspur"
       ];
-      const STORAGE_KEY = "plpLockedPredictions";
+      const STORAGE_KEY = "plpLockedPredictionsLive";
       const SELECTED_KEY = "plpSelectedManagerName";
       const REVEAL_AT = new Date("2026-08-21T20:00:00+01:00").getTime();
       const actualTable = teams.map((team, index) => ({
@@ -1174,41 +1174,9 @@
       }));
       const colors = ["#00ff85", "#05f0ff", "#ff2882", "#ebff00", "#b6f79f", "#bdd2f0", "#d9a2e8", "#ffad94"];
       const liveMatchTeams = new Set([]);
-      const seededManagers = [
-        {
-          name: "Nic",
-          firstName: "Nic",
-          lastName: "",
-          email: "",
-          color: colors[0],
-          paid: true,
-          lockedAt: "2026-07-10T15:35:55.000Z",
-          picks: [
-            "Manchester City",
-            "Manchester United",
-            "Arsenal",
-            "Tottenham Hotspur",
-            "Chelsea",
-            "Liverpool",
-            "Aston Villa",
-            "Newcastle United",
-            "Fulham",
-            "Bournemouth",
-            "Brighton & Hove Albion",
-            "Brentford",
-            "Crystal Palace",
-            "Sunderland",
-            "Nottingham Forest",
-            "Leeds United",
-            "Everton",
-            "Coventry City",
-            "Ipswich Town",
-            "Hull City"
-          ]
-        }
-      ];
+      const seededManagers = [];
       const positionByTeam = new Map(actualTable.map((row) => [row.team, row.position]));
-      let selectedName = localStorage.getItem(SELECTED_KEY) || seededManagers[0].name;
+      let selectedName = localStorage.getItem(SELECTED_KEY) || "";
 
       function ordinal(value) {
         const suffix = value % 10 === 1 && value !== 11 ? "st" : value % 10 === 2 && value !== 12 ? "nd" : value % 10 === 3 && value !== 13 ? "rd" : "th";
@@ -1376,6 +1344,14 @@
             <div class="hero-stat"><p class="label">Managers</p><p class="value">0</p></div>
           `;
           document.getElementById("managerList").innerHTML = '<div class="empty-state">No managers yet.</div>';
+          document.getElementById("managerSelect").innerHTML = "";
+          document.getElementById("selectedRank").textContent = "";
+          document.getElementById("selectedName").textContent = "";
+          document.getElementById("selectedScore").textContent = "";
+          document.getElementById("selectedPerfects").textContent = "";
+          document.getElementById("buyInButton").hidden = true;
+          document.getElementById("pickCards").innerHTML = "";
+          document.getElementById("pickRows").innerHTML = "";
           return;
         }
         const selected = results.find((manager) => manager.name === selectedName) || leader;
