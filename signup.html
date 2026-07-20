@@ -411,6 +411,48 @@
         font-variant-numeric: tabular-nums;
       }
 
+      .rules {
+        background:
+          linear-gradient(135deg, var(--purple) 0 50%, #250029 50% 100%);
+      }
+
+      .rules-title {
+        margin: 0 0 12px;
+        padding: 13px 14px;
+        background: var(--purple);
+        color: white;
+        font-size: clamp(28px, 8vw, 52px);
+        line-height: 1.06;
+        text-transform: uppercase;
+      }
+
+      .rules-grid {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+        background: white;
+        color: var(--purple);
+        box-shadow: 8px 8px 0 var(--cyan);
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .rule-card {
+        display: flex;
+        align-items: center;
+        min-height: 54px;
+        padding: 14px;
+        background: var(--green);
+      }
+
+      .rule-card:nth-child(2) {
+        background: var(--cyan);
+      }
+
+      .rule-card:nth-child(3) {
+        background: var(--yellow);
+      }
+
       @media (min-width: 760px) {
         .wrap {
           padding: 30px 24px;
@@ -445,6 +487,16 @@
         .final-actions .primary-button,
         .final-actions .secondary-button {
           min-height: 58px;
+        }
+
+        .rules-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          padding: 16px;
+        }
+
+        .rule-card {
+          min-height: 96px;
+          font-size: 20px;
         }
 
         .builder-toolbar {
@@ -593,6 +645,17 @@
             <h2>Predictions locked in</h2>
             <p>Your table has been submitted and cannot be changed.</p>
             <p>You will be redirected to the main website in <span class="countdown" id="redirectCountdown">5</span> seconds.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rules">
+        <div class="wrap">
+          <h2 class="rules-title">RULES</h2>
+          <div class="rules-grid">
+            <div class="rule-card">LOWEST SCORE WINS</div>
+            <div class="rule-card">SCORE = Difference between predicted position and actual position</div>
+            <div class="rule-card">PERFECT PREDICTION = -5pts</div>
           </div>
         </div>
       </section>
