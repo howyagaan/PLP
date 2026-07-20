@@ -122,6 +122,18 @@
         opacity: 0.48;
       }
 
+      .final-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .final-actions .primary-button,
+      .final-actions .secondary-button {
+        width: 100%;
+      }
+
       .section {
         background:
           linear-gradient(90deg, rgb(55 0 60 / 12%) 1px, transparent 1px) 0 0 / 32px 32px,
@@ -311,9 +323,9 @@
 
       .confirm-line {
         display: grid;
-        grid-template-columns: 24px minmax(0, 1fr);
-        gap: 10px;
-        align-items: start;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
         padding: 14px;
         background: white;
         color: var(--purple);
@@ -323,7 +335,9 @@
       }
 
       .confirm-line input {
-        min-height: 24px;
+        width: 28px;
+        height: 28px;
+        min-height: 28px;
         margin: 0;
         accent-color: var(--purple);
       }
@@ -397,7 +411,18 @@
           padding: 18px;
         }
 
+        .final-actions {
+          grid-template-columns: minmax(240px, 1fr) minmax(240px, 1fr);
+          align-items: center;
+          padding: 18px;
+        }
+
         .form-grid .primary-button {
+          min-height: 58px;
+        }
+
+        .final-actions .primary-button,
+        .final-actions .secondary-button {
           min-height: 58px;
         }
 
@@ -529,7 +554,7 @@
               <input id="confirmLock" type="checkbox" />
               <span>I have checked all 20 positions and understand this prediction cannot be changed once submitted.</span>
             </label>
-            <div class="form-grid">
+            <div class="final-actions">
               <button class="secondary-button" id="editButton" type="button">Keep editing</button>
               <button class="primary-button" id="confirmButton" type="button" disabled>Lock prediction</button>
             </div>
