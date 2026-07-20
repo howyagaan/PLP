@@ -2,6 +2,30 @@ const SPREADSHEET_ID = "1gKulkcIi19FEWboYHuDJ754AB-gB9D5AOgDCXmwMIAA";
 const ENTRIES_SHEET = "Entries";
 const PICKS_SHEET = "Picks";
 
+function doGet(e) {
+  const callback = clean(e.parameter.callback) || "plpReceiveSheetEntries";
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const entriesSheet = spreadsheet.getSheetByName(ENTRIES_SHEET);
+  const values = entriesSheet.getDataRange().getValues();
+  const rows = values.slice(1);
+
+  const entries = rows
+    .filter((row) => clean(row[1]) && clean(row[2]) && clean(row[3]))
+    .map((row) => ({
+      lockedAt: clean(row[0]),
+      firstName: clean(row[1]),
+      lastName: clean(row[2]),
+      email: clean(row[3]).toLowerCase(),
+      paid: row[5] === true || clean(row[5]).toLowerCase() === "true",
+      picks: row.slice(6, 26).map(clean).filter(Boolean)
+    }))
+    .filter((entry) => entry.picks.length === 20);
+
+  return ContentService
+    .createTextOutput(`${callback}(${JSON.stringify(entries)});`)
+    .setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
 function doPost(e) {
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);

@@ -1167,6 +1167,7 @@
       ];
       const STORAGE_KEY = "plpLockedPredictionsLive";
       const SELECTED_KEY = "plpSelectedManagerName";
+      const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbz4Cpz0ntzu33t2lFbLt-5VSQL8mmIGg7MMjQnUqRD9y91sjqL4KZmxOE2lrL5KCt6kdA/exec";
       const REVEAL_AT = new Date("2026-08-21T20:00:00+01:00").getTime();
       const actualTable = teams.map((team, index) => ({
         position: index + 1, team, played: 0, won: 0, drawn: 0, lost: 0,
@@ -1177,6 +1178,7 @@
       const seededManagers = [];
       const positionByTeam = new Map(actualTable.map((row) => [row.team, row.position]));
       let selectedName = localStorage.getItem(SELECTED_KEY) || "";
+      let sheetEntries = [];
 
       function ordinal(value) {
         const suffix = value % 10 === 1 && value !== 11 ? "st" : value % 10 === 2 && value !== 12 ? "nd" : value % 10 === 3 && value !== 13 ? "rd" : "th";
@@ -1219,12 +1221,8 @@
         return teams.every((team) => picked.has(team));
       }
 
-      function storedManagers() {
-        try {
-          const entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-          if (!Array.isArray(entries)) return [];
-
-          return entries
+      function managerEntries(entries, colorOffset = 0) {
+        return entries
             .filter((entry) => {
               return entry &&
                 typeof entry.firstName === "string" &&
@@ -1237,21 +1235,33 @@
               firstName: entry.firstName.trim(),
               lastName: entry.lastName.trim(),
               email: entry.email.trim().toLowerCase(),
-              color: colors[(seededManagers.length + index) % colors.length],
+              color: colors[(colorOffset + index) % colors.length],
               paid: Boolean(entry.paid),
               lockedAt: entry.lockedAt || new Date().toISOString(),
               picks: entry.picks
             }))
             .filter((manager) => manager.name && manager.email);
+      }
+
+      function storedManagers() {
+        try {
+          const entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          if (!Array.isArray(entries)) return [];
+
+          return managerEntries(entries, seededManagers.length);
         } catch {
           return [];
         }
       }
 
+      function sheetManagers() {
+        return managerEntries(sheetEntries, seededManagers.length + storedManagers().length);
+      }
+
       function allManagers() {
         const byKey = new Map();
 
-        [...seededManagers, ...storedManagers()].forEach((manager, index) => {
+        [...seededManagers, ...storedManagers(), ...sheetManagers()].forEach((manager, index) => {
           const key = manager.email || manager.name.toLowerCase();
           byKey.set(key, {
             ...manager,
@@ -1260,6 +1270,20 @@
         });
 
         return Array.from(byKey.values());
+      }
+
+      window.plpReceiveSheetEntries = (entries) => {
+        sheetEntries = Array.isArray(entries) ? entries : [];
+        render();
+      };
+
+      function loadCommissionerSheet() {
+        if (!GOOGLE_SHEET_WEBHOOK_URL) return;
+
+        const script = document.createElement("script");
+        script.src = `${GOOGLE_SHEET_WEBHOOK_URL}?callback=plpReceiveSheetEntries&v=${Date.now()}`;
+        script.async = true;
+        document.body.appendChild(script);
       }
 
       function isCurrentlyPlaying(row) {
@@ -1434,6 +1458,7 @@
       });
       window.addEventListener("resize", fitManagerNames);
       render();
+      loadCommissionerSheet();
     </script>
   </body>
 </html>
