@@ -791,6 +791,46 @@
         }
       }
 
+      function loadExistingEntries() {
+        return new Promise((resolve, reject) => {
+          if (!GOOGLE_SHEET_WEBHOOK_URL) {
+            resolve([]);
+            return;
+          }
+
+          const callbackName = `plpSignupEmailCheck${Date.now()}${Math.floor(Math.random() * 100000)}`;
+          const script = document.createElement("script");
+          const timeout = window.setTimeout(() => {
+            cleanup();
+            reject(new Error("Email check timed out."));
+          }, 10000);
+
+          function cleanup() {
+            window.clearTimeout(timeout);
+            delete window[callbackName];
+            script.remove();
+          }
+
+          window[callbackName] = (entries) => {
+            cleanup();
+            resolve(Array.isArray(entries) ? entries : []);
+          };
+
+          script.onerror = () => {
+            cleanup();
+            reject(new Error("Email check failed."));
+          };
+          script.src = `${GOOGLE_SHEET_WEBHOOK_URL}?callback=${callbackName}&v=${Date.now()}`;
+          script.async = true;
+          document.body.appendChild(script);
+        });
+      }
+
+      async function emailAlreadySubmitted(email) {
+        const entries = await loadExistingEntries();
+        return entries.some((entry) => String(entry.email || "").trim().toLowerCase() === email);
+      }
+
       function moveTeam(fromIndex, toIndex, shouldRender = true) {
         if (toIndex < 0 || toIndex >= picks.length || fromIndex === toIndex) return;
         const next = [...picks];
@@ -860,8 +900,9 @@
         `).join("");
       }
 
-      document.getElementById("managerForm").addEventListener("submit", (event) => {
+      document.getElementById("managerForm").addEventListener("submit", async (event) => {
         event.preventDefault();
+        const submitButton = event.target.querySelector("button");
         const firstName = document.getElementById("firstName").value.trim();
         const lastName = document.getElementById("lastName").value.trim();
         const email = document.getElementById("email").value.trim().toLowerCase();
@@ -872,8 +913,28 @@
           return;
         }
 
+        submitButton.disabled = true;
+        submitButton.textContent = "Checking";
+        message.textContent = "Checking email...";
+
+        try {
+          if (await emailAlreadySubmitted(email)) {
+            message.textContent = "That email has already been used to submit predictions.";
+            submitButton.disabled = false;
+            submitButton.textContent = "Unlock picks";
+            return;
+          }
+        } catch {
+          message.textContent = "Could not check existing signups. Please refresh and try again.";
+          submitButton.disabled = false;
+          submitButton.textContent = "Unlock picks";
+          return;
+        }
+
         manager = { firstName, lastName, email };
         message.textContent = "";
+        submitButton.disabled = false;
+        submitButton.textContent = "Unlock picks";
         document.getElementById("managerBadge").textContent = `${firstName} ${lastName}`;
         document.getElementById("detailsSection").classList.add("hidden");
         document.getElementById("builderShell").classList.add("unlocked");
@@ -925,6 +986,23 @@
         predictionSubmitted = true;
         document.getElementById("confirmButton").disabled = true;
         document.getElementById("editButton").disabled = true;
+        reviewMessage.textContent = "Checking email...";
+
+        try {
+          if (await emailAlreadySubmitted(manager.email)) {
+            reviewMessage.textContent = "That email has already been used to submit predictions.";
+            predictionSubmitted = false;
+            document.getElementById("confirmButton").disabled = false;
+            document.getElementById("editButton").disabled = false;
+            return;
+          }
+        } catch {
+          reviewMessage.textContent = "Could not check existing signups. Please refresh and try again.";
+          predictionSubmitted = false;
+          document.getElementById("confirmButton").disabled = false;
+          document.getElementById("editButton").disabled = false;
+          return;
+        }
 
         const entry = {
           firstName: manager.firstName,
@@ -935,6 +1013,7 @@
           picks: [...picks]
         };
         localStorage.setItem(SELECTED_KEY, `${manager.firstName} ${manager.lastName}`);
+        reviewMessage.textContent = "";
         showLockedConfirmation();
         await Promise.all([
           submitToNetlify(entry),

@@ -1399,9 +1399,9 @@
         revealInfo.textContent = revealed ? "" : revealMessage();
         const leader = results[0];
         if (!leader) {
-          document.getElementById("heroStats").innerHTML = `
+          document.getElementById("heroStats").innerHTML = revealed ? `
             <div class="hero-stat"><p class="label">Managers</p><p class="value">0</p></div>
-          `;
+          ` : "";
           document.getElementById("managerList").innerHTML = '<div class="empty-state">No managers yet.</div>';
           document.getElementById("managerSelect").innerHTML = "";
           document.getElementById("selectedRank").textContent = "";
@@ -1422,9 +1422,7 @@
           <div class="hero-stat"><p class="label">Leader</p><p class="value">${escapeHtml(leader.name)}</p></div>
           <div class="hero-stat"><p class="label">Score</p><p class="value">${leader.score}</p></div>
           <div class="hero-stat"><p class="label">Perfects</p><p class="value">${leader.perfects}</p></div>
-        ` : `
-          <div class="hero-stat"><p class="label">Managers</p><p class="value">${results.length}</p></div>
-        `;
+        ` : "";
 
         document.getElementById("managerList").innerHTML = results.map((manager, index) => `
           <button class="manager-row ${manager.name === selected.name ? "active" : ""}" data-manager-index="${index}">
