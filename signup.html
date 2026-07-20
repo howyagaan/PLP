@@ -556,7 +556,6 @@
         "Hull City", "Ipswich Town", "Leeds United", "Liverpool", "Manchester City",
         "Manchester United", "Newcastle United", "Nottingham Forest", "Sunderland", "Tottenham Hotspur"
       ];
-      const STORAGE_KEY = "plpLockedPredictionsLive";
       const SELECTED_KEY = "plpSelectedManagerName";
       const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbz4Cpz0ntzu33t2lFbLt-5VSQL8mmIGg7MMjQnUqRD9y91sjqL4KZmxOE2lrL5KCt6kdA/exec";
       let picks = [...teams];
@@ -571,19 +570,6 @@
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#39;");
-      }
-
-      function submissions() {
-        try {
-          const entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-          return Array.isArray(entries) ? entries : [];
-        } catch {
-          return [];
-        }
-      }
-
-      function saveSubmissions(entries) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
       }
 
       async function submitToNetlify(entry) {
@@ -619,10 +605,6 @@
         } catch {
           // Keep the manager flow moving if the external sheet endpoint is unavailable.
         }
-      }
-
-      function emailAlreadyLocked(email) {
-        return submissions().some((entry) => String(entry.email || "").toLowerCase() === email.toLowerCase());
       }
 
       function moveTeam(fromIndex, toIndex, shouldRender = true) {
@@ -703,11 +685,6 @@
           return;
         }
 
-        if (emailAlreadyLocked(email)) {
-          message.textContent = "This email already has a locked prediction.";
-          return;
-        }
-
         manager = { firstName, lastName, email };
         message.textContent = "";
         document.getElementById("managerBadge").textContent = `${firstName} ${lastName}`;
@@ -759,11 +736,6 @@
         const reviewMessage = document.getElementById("reviewMessage");
         if (!manager) return;
 
-        if (emailAlreadyLocked(manager.email)) {
-          reviewMessage.textContent = "This email already has a locked prediction.";
-          return;
-        }
-
         const entry = {
           firstName: manager.firstName,
           lastName: manager.lastName,
@@ -772,9 +744,6 @@
           lockedAt: new Date().toISOString(),
           picks: [...picks]
         };
-        const entries = submissions();
-        entries.push(entry);
-        saveSubmissions(entries);
         localStorage.setItem(SELECTED_KEY, `${manager.firstName} ${manager.lastName}`);
         await submitToNetlify(entry);
         await submitToCommissionerSheet(entry);
