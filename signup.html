@@ -338,6 +338,44 @@
         text-transform: uppercase;
       }
 
+      .success-panel {
+        display: none;
+        background:
+          linear-gradient(90deg, rgb(55 0 60 / 12%) 1px, transparent 1px) 0 0 / 32px 32px,
+          var(--green);
+        color: var(--purple);
+      }
+
+      .success-panel.visible {
+        display: block;
+      }
+
+      .success-card {
+        padding: 18px;
+        background: white;
+        box-shadow: 8px 8px 0 var(--cyan);
+      }
+
+      .success-card h2 {
+        margin: 0;
+        font-size: clamp(32px, 9vw, 62px);
+        line-height: 1.06;
+        text-transform: uppercase;
+      }
+
+      .success-card p {
+        margin: 12px 0 0;
+        font-size: clamp(16px, 4vw, 24px);
+        font-weight: 900;
+        line-height: 1.18;
+        text-transform: uppercase;
+      }
+
+      .countdown {
+        color: var(--pink);
+        font-variant-numeric: tabular-nums;
+      }
+
       @media (min-width: 760px) {
         .wrap {
           padding: 30px 24px;
@@ -496,6 +534,16 @@
               <button class="primary-button" id="confirmButton" type="button" disabled>Lock prediction</button>
             </div>
             <div class="message" id="reviewMessage" role="status"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="success-panel" id="successPanel" aria-live="polite">
+        <div class="wrap">
+          <div class="success-card">
+            <h2>Predictions locked in</h2>
+            <p>Your table has been submitted and cannot be changed.</p>
+            <p>You will be redirected to the main website in <span class="countdown" id="redirectCountdown">5</span> seconds.</p>
           </div>
         </div>
       </section>
@@ -688,6 +736,25 @@
         document.getElementById("confirmButton").disabled = !event.target.checked;
       });
 
+      function showLockedConfirmation() {
+        let secondsLeft = 5;
+        document.getElementById("builderShell").classList.remove("unlocked");
+        document.getElementById("reviewPanel").classList.remove("visible");
+        document.getElementById("successPanel").classList.add("visible");
+        document.getElementById("redirectCountdown").textContent = secondsLeft;
+        document.getElementById("successPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+
+        const countdown = window.setInterval(() => {
+          secondsLeft -= 1;
+          document.getElementById("redirectCountdown").textContent = Math.max(secondsLeft, 0);
+
+          if (secondsLeft <= 0) {
+            window.clearInterval(countdown);
+            window.location.href = "index.html";
+          }
+        }, 1000);
+      }
+
       document.getElementById("confirmButton").addEventListener("click", async () => {
         const reviewMessage = document.getElementById("reviewMessage");
         if (!manager) return;
@@ -711,7 +778,7 @@
         localStorage.setItem(SELECTED_KEY, `${manager.firstName} ${manager.lastName}`);
         await submitToNetlify(entry);
         await submitToCommissionerSheet(entry);
-        window.location.href = "index.html";
+        showLockedConfirmation();
       });
     </script>
   </body>
