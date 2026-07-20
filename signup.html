@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Submit Predictions | Premier League Predictions 26/27</title>
+    <link rel="icon" href="public/premier-league-logo-symbol.png" />
+    <style>
+      :root {
+        --purple: #37003c;
+        --green: #00ff85;
+        --pink: #ff2882;
+        --cyan: #05f0ff;
+        --yellow: #ebff00;
+        --pl-font: "Radikal", "Avenir Next", "Futura", "Trebuchet MS", Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+        background: var(--purple);
+        color: white;
+        font-family: var(--pl-font);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        cursor: pointer;
+      }
+
+      button:focus-visible,
+      input:focus-visible,
+      a:focus-visible {
+        outline: 4px solid var(--yellow);
+        outline-offset: 3px;
+      }
+
+      .wrap {
+        width: min(100%, 1120px);
+        margin: 0 auto;
+        padding: 20px 14px;
+      }
+
+      .hero {
+        background:
+          radial-gradient(circle at 12% 0%, var(--pink) 0 14%, transparent 32%),
+          radial-gradient(circle at 92% 10%, var(--cyan) 0 13%, transparent 30%),
+          linear-gradient(135deg, var(--purple) 0 55%, var(--green) 55% 68%, var(--yellow) 68% 100%);
+      }
+
+      .brand {
+        display: grid;
+        grid-template-columns: 62px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+      }
+
+      .brand img {
+        width: 62px;
+        height: 62px;
+        object-fit: contain;
+        background: white;
+        padding: 8px;
+        box-shadow: 6px 6px 0 var(--green);
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(34px, 10vw, 78px);
+        line-height: 1.04;
+      }
+
+      .top-actions {
+        display: none;
+      }
+
+      .link-button,
+      .primary-button,
+      .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 12px 14px;
+        background: var(--yellow);
+        color: var(--purple);
+        box-shadow: 5px 5px 0 var(--pink);
+        font-weight: 900;
+        letter-spacing: 0.07em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .primary-button {
+        width: 100%;
+        background: var(--green);
+      }
+
+      .secondary-button {
+        background: var(--cyan);
+        box-shadow-color: var(--green);
+      }
+
+      .primary-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.48;
+      }
+
+      .section {
+        background:
+          linear-gradient(90deg, rgb(55 0 60 / 12%) 1px, transparent 1px) 0 0 / 32px 32px,
+          var(--green);
+        color: var(--purple);
+      }
+
+      .section.hidden {
+        display: none;
+      }
+
+      .section.pink {
+        background:
+          linear-gradient(135deg, rgb(255 255 255 / 18%) 0 10%, transparent 10% 20%, rgb(255 255 255 / 10%) 20% 30%, transparent 30%),
+          var(--pink);
+      }
+
+      .panel {
+        overflow: hidden;
+        background: white;
+        color: var(--purple);
+        box-shadow: 8px 8px 0 var(--pink);
+      }
+
+      .panel-head {
+        display: grid;
+        gap: 6px;
+        padding: 14px;
+        background: var(--purple);
+        color: white;
+      }
+
+      .panel-head h2 {
+        font-size: clamp(28px, 8vw, 52px);
+        line-height: 1.06;
+        text-transform: uppercase;
+      }
+
+      .panel-head p {
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      input {
+        width: 100%;
+        min-height: 52px;
+        border: 4px solid var(--purple);
+        padding: 0 12px;
+        background: white;
+        color: var(--purple);
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .builder-shell {
+        display: none;
+      }
+
+      .builder-shell.unlocked {
+        display: block;
+      }
+
+      .builder-toolbar {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+        background: var(--yellow);
+      }
+
+      .count-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        min-height: 34px;
+        padding: 7px 10px;
+        background: var(--purple);
+        color: white;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .team-list,
+      .review-list {
+        display: grid;
+        gap: 0;
+      }
+
+      .team-row,
+      .review-row {
+        display: grid;
+        grid-template-columns: 42px 30px minmax(0, 1fr);
+        gap: 6px;
+        align-items: center;
+        min-height: 58px;
+        padding: 9px 8px;
+        border-bottom: 2px solid rgb(55 0 60 / 10%);
+        background: rgb(0 255 133 / 28%);
+        color: var(--purple);
+        font-weight: 900;
+      }
+
+      .team-row {
+        cursor: default;
+        user-select: none;
+      }
+
+      .team-row:nth-child(even),
+      .review-row:nth-child(even) {
+        background: rgb(5 240 255 / 18%);
+      }
+
+      .team-row.dragging {
+        background: var(--yellow);
+        box-shadow: inset 7px 0 0 var(--pink);
+        cursor: grabbing;
+      }
+
+      .drag-handle {
+        display: grid;
+        gap: 3px;
+        width: 20px;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .drag-handle span {
+        display: block;
+        height: 4px;
+        background: var(--purple);
+      }
+
+      .body-dragging {
+        user-select: none;
+      }
+
+      .position {
+        font-size: 20px;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+      }
+
+      .team-name {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        font-size: 18px;
+        line-height: 1.02;
+      }
+
+      .review-panel {
+        display: none;
+      }
+
+      .review-panel.visible {
+        display: block;
+      }
+
+      .warning {
+        padding: 14px;
+        background: var(--yellow);
+        color: var(--purple);
+        font-size: 14px;
+        font-weight: 900;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
+
+      .confirm-line {
+        display: grid;
+        grid-template-columns: 24px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        padding: 14px;
+        background: white;
+        color: var(--purple);
+        font-size: 14px;
+        font-weight: 900;
+        line-height: 1.2;
+      }
+
+      .confirm-line input {
+        min-height: 24px;
+        margin: 0;
+        accent-color: var(--purple);
+      }
+
+      .message {
+        min-height: 24px;
+        padding: 0 14px 14px;
+        color: #d6004f;
+        font-size: 13px;
+        font-weight: 900;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
+
+      @media (min-width: 760px) {
+        .wrap {
+          padding: 30px 24px;
+        }
+
+        .brand {
+          grid-template-columns: 96px minmax(0, 1fr);
+          gap: 18px;
+        }
+
+        .brand img {
+          width: 96px;
+          height: 96px;
+        }
+
+        .form-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          align-items: end;
+          padding: 18px;
+        }
+
+        .form-grid .primary-button {
+          min-height: 58px;
+        }
+
+        .builder-toolbar {
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: center;
+          padding: 16px;
+        }
+
+        .team-row,
+        .review-row {
+          grid-template-columns: 60px 36px minmax(0, 1fr);
+          min-height: 64px;
+          padding: 11px 14px;
+        }
+
+        .team-name {
+          font-size: 22px;
+        }
+
+        .primary-button {
+          width: fit-content;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .wrap {
+          padding-inline: 10px;
+        }
+
+        .brand {
+          grid-template-columns: 56px minmax(0, 1fr);
+        }
+
+        .brand img {
+          width: 56px;
+          height: 56px;
+        }
+
+        h1 {
+          font-size: clamp(31px, 10vw, 38px);
+        }
+
+        .team-row,
+        .review-row {
+          grid-template-columns: 36px 26px minmax(0, 1fr);
+          gap: 5px;
+        }
+
+        .team-name {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <form name="plp-prediction" method="POST" data-netlify="true" hidden>
+        <input type="hidden" name="form-name" value="plp-prediction" />
+        <input type="text" name="firstName" />
+        <input type="text" name="lastName" />
+        <input type="email" name="email" />
+        <textarea name="picks"></textarea>
+        <input type="text" name="lockedAt" />
+      </form>
+
+      <section class="hero">
+        <div class="wrap">
+          <div class="brand">
+            <img src="public/premier-league-logo-symbol.png" alt="Premier League" />
+            <h1>Submit Predictions</h1>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="detailsSection">
+        <div class="wrap">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Manager Details</h2>
+              <p>Enter your details to unlock the 20-team list.</p>
+            </div>
+            <form class="form-grid" id="managerForm">
+              <label>
+                First name
+                <input id="firstName" name="firstName" autocomplete="given-name" required />
+              </label>
+              <label>
+                Last name
+                <input id="lastName" name="lastName" autocomplete="family-name" required />
+              </label>
+              <label>
+                Email
+                <input id="email" name="email" type="email" autocomplete="email" required />
+              </label>
+              <button class="primary-button" type="submit">Unlock picks</button>
+            </form>
+            <div class="message" id="formMessage" role="status"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section pink builder-shell" id="builderShell">
+        <div class="wrap">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Set Your Table</h2>
+              <p>Move teams into your predicted 1st to 20th order.</p>
+            </div>
+            <div class="builder-toolbar">
+              <span class="count-pill" id="managerBadge"></span>
+              <button class="secondary-button" id="reviewButton" type="button">Review and lock</button>
+            </div>
+            <div class="team-list" id="teamList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section review-panel" id="reviewPanel">
+        <div class="wrap">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Final Check</h2>
+              <p>This is the last screen before your prediction locks.</p>
+            </div>
+            <div class="warning">Once submitted, this prediction is locked and cannot be changed from this page.</div>
+            <div class="review-list" id="reviewList"></div>
+            <label class="confirm-line">
+              <input id="confirmLock" type="checkbox" />
+              <span>I have checked all 20 positions and understand this prediction cannot be changed once submitted.</span>
+            </label>
+            <div class="form-grid">
+              <button class="secondary-button" id="editButton" type="button">Keep editing</button>
+              <button class="primary-button" id="confirmButton" type="button" disabled>Lock prediction</button>
+            </div>
+            <div class="message" id="reviewMessage" role="status"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const teams = [
+        "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton & Hove Albion",
+        "Chelsea", "Coventry City", "Crystal Palace", "Everton", "Fulham",
+        "Hull City", "Ipswich Town", "Leeds United", "Liverpool", "Manchester City",
+        "Manchester United", "Newcastle United", "Nottingham Forest", "Sunderland", "Tottenham Hotspur"
+      ];
+      const STORAGE_KEY = "plpLockedPredictions";
+      const SELECTED_KEY = "plpSelectedManagerName";
+      const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbz4Cpz0ntzu33t2lFbLt-5VSQL8mmIGg7MMjQnUqRD9y91sjqL4KZmxOE2lrL5KCt6kdA/exec";
+      let picks = [...teams];
+      let manager = null;
+      let draggingIndex = null;
+      let dragPointerId = null;
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function submissions() {
+        try {
+          const entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(entries) ? entries : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveSubmissions(entries) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      }
+
+      async function submitToNetlify(entry) {
+        const data = new URLSearchParams();
+        data.append("form-name", "plp-prediction");
+        data.append("firstName", entry.firstName);
+        data.append("lastName", entry.lastName);
+        data.append("email", entry.email);
+        data.append("picks", entry.picks.map((team, index) => `${index + 1}. ${team}`).join("\n"));
+        data.append("lockedAt", entry.lockedAt);
+
+        try {
+          await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: data.toString()
+          });
+        } catch {
+          // Local file previews cannot post to Netlify, but the browser save still works.
+        }
+      }
+
+      async function submitToCommissionerSheet(entry) {
+        if (!GOOGLE_SHEET_WEBHOOK_URL) return;
+
+        try {
+          await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(entry)
+          });
+        } catch {
+          // Keep the manager flow moving if the external sheet endpoint is unavailable.
+        }
+      }
+
+      function emailAlreadyLocked(email) {
+        return submissions().some((entry) => String(entry.email || "").toLowerCase() === email.toLowerCase());
+      }
+
+      function moveTeam(fromIndex, toIndex, shouldRender = true) {
+        if (toIndex < 0 || toIndex >= picks.length || fromIndex === toIndex) return;
+        const next = [...picks];
+        const [team] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, team);
+        picks = next;
+        if (shouldRender) renderTeamList();
+      }
+
+      function renderTeamList() {
+        document.getElementById("teamList").innerHTML = picks.map((team, index) => `
+          <div class="team-row ${index === draggingIndex ? "dragging" : ""}" data-index="${index}">
+            <span class="position">${index + 1}</span>
+            <span class="drag-handle" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="team-name">${escapeHtml(team)}</span>
+          </div>
+        `).join("");
+
+        document.querySelectorAll(".drag-handle").forEach((handle) => {
+          handle.addEventListener("pointerdown", (event) => {
+            if (event.button !== undefined && event.button !== 0) return;
+            const row = handle.closest(".team-row");
+            draggingIndex = Number(row.dataset.index);
+            dragPointerId = event.pointerId;
+            row.classList.add("dragging");
+            event.preventDefault();
+            document.body.classList.add("body-dragging");
+          });
+        });
+      }
+
+      function finishDragging() {
+        if (draggingIndex === null) return;
+        draggingIndex = null;
+        dragPointerId = null;
+        document.body.classList.remove("body-dragging");
+        renderTeamList();
+      }
+
+      document.addEventListener("pointermove", (event) => {
+        if (draggingIndex === null || event.pointerId !== dragPointerId) return;
+        event.preventDefault();
+        const target = document.elementFromPoint(event.clientX, event.clientY)?.closest(".team-row");
+        if (!target) return;
+
+        const targetIndex = Number(target.dataset.index);
+        if (!Number.isInteger(targetIndex) || targetIndex === draggingIndex) return;
+
+        moveTeam(draggingIndex, targetIndex, false);
+        draggingIndex = targetIndex;
+        renderTeamList();
+      }, { passive: false });
+
+      document.addEventListener("pointerup", finishDragging);
+      document.addEventListener("pointercancel", finishDragging);
+
+      function renderReview() {
+        document.getElementById("reviewList").innerHTML = picks.map((team, index) => `
+          <div class="review-row">
+            <span class="position">${index + 1}</span>
+            <span></span>
+            <span class="team-name">${escapeHtml(team)}</span>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("managerForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        const email = document.getElementById("email").value.trim().toLowerCase();
+        const message = document.getElementById("formMessage");
+
+        if (!firstName || !lastName || !email) {
+          message.textContent = "Please enter your first name, last name, and email.";
+          return;
+        }
+
+        if (emailAlreadyLocked(email)) {
+          message.textContent = "This email already has a locked prediction.";
+          return;
+        }
+
+        manager = { firstName, lastName, email };
+        message.textContent = "";
+        document.getElementById("managerBadge").textContent = `${firstName} ${lastName}`;
+        document.getElementById("detailsSection").classList.add("hidden");
+        document.getElementById("builderShell").classList.add("unlocked");
+        renderTeamList();
+        document.getElementById("builderShell").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      document.getElementById("reviewButton").addEventListener("click", () => {
+        if (!manager) return;
+        renderReview();
+        document.getElementById("confirmLock").checked = false;
+        document.getElementById("confirmButton").disabled = true;
+        document.getElementById("reviewMessage").textContent = "";
+        document.getElementById("reviewPanel").classList.add("visible");
+        document.getElementById("reviewPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      document.getElementById("editButton").addEventListener("click", () => {
+        document.getElementById("reviewPanel").classList.remove("visible");
+        document.getElementById("builderShell").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      document.getElementById("confirmLock").addEventListener("change", (event) => {
+        document.getElementById("confirmButton").disabled = !event.target.checked;
+      });
+
+      document.getElementById("confirmButton").addEventListener("click", async () => {
+        const reviewMessage = document.getElementById("reviewMessage");
+        if (!manager) return;
+
+        if (emailAlreadyLocked(manager.email)) {
+          reviewMessage.textContent = "This email already has a locked prediction.";
+          return;
+        }
+
+        const entry = {
+          firstName: manager.firstName,
+          lastName: manager.lastName,
+          email: manager.email,
+          paid: false,
+          lockedAt: new Date().toISOString(),
+          picks: [...picks]
+        };
+        const entries = submissions();
+        entries.push(entry);
+        saveSubmissions(entries);
+        localStorage.setItem(SELECTED_KEY, `${manager.firstName} ${manager.lastName}`);
+        await submitToNetlify(entry);
+        await submitToCommissionerSheet(entry);
+        window.location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>

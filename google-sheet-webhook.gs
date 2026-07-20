@@ -1,0 +1,71 @@
+const SPREADSHEET_ID = "1gKulkcIi19FEWboYHuDJ754AB-gB9D5AOgDCXmwMIAA";
+const ENTRIES_SHEET = "Entries";
+const PICKS_SHEET = "Picks";
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+
+  try {
+    const entry = JSON.parse(e.postData.contents || "{}");
+    const firstName = clean(entry.firstName);
+    const lastName = clean(entry.lastName);
+    const email = clean(entry.email).toLowerCase();
+    const fullName = `${firstName} ${lastName}`.trim();
+    const lockedAt = clean(entry.lockedAt) || new Date().toISOString();
+    const picks = Array.isArray(entry.picks) ? entry.picks.map(clean) : [];
+
+    if (!firstName || !lastName || !email || picks.length !== 20) {
+      return jsonResponse({ ok: false, error: "Missing manager details or picks." });
+    }
+
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const entriesSheet = spreadsheet.getSheetByName(ENTRIES_SHEET);
+    const picksSheet = spreadsheet.getSheetByName(PICKS_SHEET);
+
+    if (emailAlreadyExists(entriesSheet, email)) {
+      return jsonResponse({ ok: false, error: "This email already submitted." });
+    }
+
+    entriesSheet.appendRow([
+      lockedAt,
+      firstName,
+      lastName,
+      email,
+      fullName,
+      false,
+      ...picks
+    ]);
+
+    picks.forEach((team, index) => {
+      picksSheet.appendRow([lockedAt, email, fullName, index + 1, team]);
+    });
+
+    return jsonResponse({ ok: true });
+  } catch (error) {
+    return jsonResponse({ ok: false, error: String(error) });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function clean(value) {
+  return String(value || "").trim();
+}
+
+function emailAlreadyExists(sheet, email) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return false;
+
+  return sheet
+    .getRange(2, 4, lastRow - 1, 1)
+    .getValues()
+    .flat()
+    .some((value) => clean(value).toLowerCase() === email);
+}
+
+function jsonResponse(payload) {
+  return ContentService
+    .createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
+}

@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "build": "npm run build:static",
-    "build:static": "mkdir -p netlify-dist/public && cp index.html netlify-dist/index.html && cp -R public/* netlify-dist/public/"
+    "build:static": "mkdir -p netlify-dist/public && cp index.html netlify-dist/index.html && cp signup.html netlify-dist/signup.html && cp -R public/* netlify-dist/public/"
   }
 }

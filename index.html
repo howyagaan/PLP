@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Premier League Predictions 26/27</title>
-    <link rel="icon" href="/public/premier-league-logo-symbol.png" />
+    <link rel="icon" href="public/premier-league-logo-symbol.png" />
     <style>
       :root {
         --purple: #37003c;
@@ -62,7 +62,7 @@
         bottom: -95px;
         width: min(58vw, 430px);
         aspect-ratio: 1;
-        background: url("/public/premier-league-logo-symbol.png") center / contain no-repeat;
+        background: url("public/premier-league-logo-symbol.png") center / contain no-repeat;
         opacity: 0.12;
         pointer-events: none;
       }
@@ -94,7 +94,7 @@
         margin: 0;
         max-width: 920px;
         font-size: clamp(34px, 10vw, 86px);
-        line-height: 0.92;
+        line-height: 1.04;
         letter-spacing: 0;
       }
 
@@ -103,6 +103,10 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 7px;
         color: var(--purple);
+      }
+
+      .hero-stats:empty {
+        display: none;
       }
 
       .hero-stat {
@@ -167,7 +171,7 @@
       .section-title {
         margin: 0;
         font-size: clamp(28px, 8vw, 56px);
-        line-height: 0.92;
+        line-height: 1.04;
         text-transform: uppercase;
       }
 
@@ -187,13 +191,24 @@
         color: var(--purple);
       }
 
+      .reveal-info {
+        margin: 0 0 12px;
+        padding: 12px 14px;
+        background: var(--yellow);
+        color: var(--purple);
+        font-size: clamp(13px, 3.8vw, 18px);
+        font-weight: 900;
+        line-height: 1.15;
+        text-transform: uppercase;
+      }
+
       .plain-section-title {
         margin: 0 0 12px;
         padding: 13px 14px;
         background: var(--purple);
         color: white;
         font-size: clamp(24px, 7vw, 44px);
-        line-height: 0.95;
+        line-height: 1.06;
         text-transform: uppercase;
       }
 
@@ -277,6 +292,45 @@
         overflow-wrap: anywhere;
       }
 
+      .manager-name {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        line-height: 1.12;
+        padding-bottom: 0.08em;
+      }
+
+      .empty-state {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 28px;
+        padding: 5px 8px;
+        background: white;
+        color: var(--purple);
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .secret-club {
+        display: block;
+        width: min(100%, 220px);
+        min-height: 21px;
+        background: linear-gradient(90deg, rgb(55 0 60 / 88%), rgb(55 0 60 / 42%));
+        filter: blur(3px);
+      }
+
+      .pending-stat {
+        display: block;
+        width: min(100%, 56px);
+        min-height: 22px;
+        margin-left: auto;
+        background: rgb(55 0 60 / 26%);
+      }
+
       .club {
         line-height: 1.05;
       }
@@ -356,8 +410,12 @@
       .live-title {
         margin: 0;
         font-size: clamp(32px, 8.5vw, 58px);
-        line-height: 0.92;
+        line-height: 1.08;
+        max-width: 100%;
+        overflow: hidden;
         overflow-wrap: anywhere;
+        white-space: nowrap;
+        padding-bottom: 0.08em;
       }
 
       .selected-name-row {
@@ -927,7 +985,7 @@
       <section class="hero">
         <div class="wrap hero-grid">
           <div class="brand">
-            <img src="/public/premier-league-logo-symbol.png" alt="Premier League" />
+            <img src="public/premier-league-logo-symbol.png" alt="Premier League" />
             <h1>Premier League Predictions 26/27</h1>
           </div>
           <div class="hero-stats" id="heroStats"></div>
@@ -936,6 +994,7 @@
 
       <section class="compiled">
         <div class="wrap">
+          <p class="reveal-info" id="revealInfo" hidden></p>
           <div class="section-bar">
             <h2 class="section-title">Manager Table</h2>
           </div>
@@ -970,7 +1029,7 @@
                 <div class="selected-name-row">
                   <h2 id="selectedName"></h2>
                   <a class="buy-in-button" id="buyInButton" href="https://venmo.com/u/Nicholas-Hamilton45" data-app-url="venmo://users/Nicholas-Hamilton45" data-web-url="https://venmo.com/u/Nicholas-Hamilton45" target="_blank" rel="noopener noreferrer" aria-label="Tap to buy in on Venmo for $27">
-                    <img src="/public/venmo-logo.png" alt="Venmo" />
+                    <img src="public/venmo-logo.png" alt="Venmo" />
                     <span class="buy-in-copy">Tap to buy-in!</span>
                     <span class="buy-in-price">$27</span>
                   </a>
@@ -1106,17 +1165,24 @@
         "Hull City", "Ipswich Town", "Leeds United", "Liverpool", "Manchester City",
         "Manchester United", "Newcastle United", "Nottingham Forest", "Sunderland", "Tottenham Hotspur"
       ];
+      const STORAGE_KEY = "plpLockedPredictions";
+      const SELECTED_KEY = "plpSelectedManagerName";
+      const REVEAL_AT = new Date("2026-08-21T20:00:00+01:00").getTime();
       const actualTable = teams.map((team, index) => ({
         position: index + 1, team, played: 0, won: 0, drawn: 0, lost: 0,
         goalsFor: 0, goalsAgainst: 0, goalDifference: 0, points: 0, isPlaying: false
       }));
       const colors = ["#00ff85", "#05f0ff", "#ff2882", "#ebff00", "#b6f79f", "#bdd2f0", "#d9a2e8", "#ffad94"];
       const liveMatchTeams = new Set([]);
-      const managers = [
+      const seededManagers = [
         {
           name: "Nic",
+          firstName: "Nic",
+          lastName: "",
+          email: "",
           color: colors[0],
           paid: true,
+          lockedAt: "2026-07-10T15:35:55.000Z",
           picks: [
             "Manchester City",
             "Manchester United",
@@ -1142,7 +1208,7 @@
         }
       ];
       const positionByTeam = new Map(actualTable.map((row) => [row.team, row.position]));
-      let selectedName = managers[0].name;
+      let selectedName = localStorage.getItem(SELECTED_KEY) || seededManagers[0].name;
 
       function ordinal(value) {
         const suffix = value % 10 === 1 && value !== 11 ? "st" : value % 10 === 2 && value !== 12 ? "nd" : value % 10 === 3 && value !== 13 ? "rd" : "th";
@@ -1156,6 +1222,76 @@
       function scoreClass(score) {
         if (score === -5) return "perfect";
         return "";
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function predictionsArePublic() {
+        return Date.now() >= REVEAL_AT;
+      }
+
+      function revealLabel() {
+        return "20:00 UK, 21 Aug 2026";
+      }
+
+      function revealMessage() {
+        return `Predictions stay hidden until Premier League kickoff: ${revealLabel()}.`;
+      }
+
+      function teamSetIsValid(picks) {
+        if (!Array.isArray(picks) || picks.length !== teams.length) return false;
+        const picked = new Set(picks);
+        return teams.every((team) => picked.has(team));
+      }
+
+      function storedManagers() {
+        try {
+          const entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          if (!Array.isArray(entries)) return [];
+
+          return entries
+            .filter((entry) => {
+              return entry &&
+                typeof entry.firstName === "string" &&
+                typeof entry.lastName === "string" &&
+                typeof entry.email === "string" &&
+                teamSetIsValid(entry.picks);
+            })
+            .map((entry, index) => ({
+              name: `${entry.firstName.trim()} ${entry.lastName.trim()}`.trim(),
+              firstName: entry.firstName.trim(),
+              lastName: entry.lastName.trim(),
+              email: entry.email.trim().toLowerCase(),
+              color: colors[(seededManagers.length + index) % colors.length],
+              paid: Boolean(entry.paid),
+              lockedAt: entry.lockedAt || new Date().toISOString(),
+              picks: entry.picks
+            }))
+            .filter((manager) => manager.name && manager.email);
+        } catch {
+          return [];
+        }
+      }
+
+      function allManagers() {
+        const byKey = new Map();
+
+        [...seededManagers, ...storedManagers()].forEach((manager, index) => {
+          const key = manager.email || manager.name.toLowerCase();
+          byKey.set(key, {
+            ...manager,
+            color: manager.color || colors[index % colors.length]
+          });
+        });
+
+        return Array.from(byKey.values());
       }
 
       function isCurrentlyPlaying(row) {
@@ -1195,35 +1331,84 @@
         };
       }
 
+      function byName(a, b) {
+        return a.name.localeCompare(b.name);
+      }
+
+      function sortedResults(managers, revealed) {
+        const results = managers.map(result);
+        if (revealed) {
+          return results.sort((a, b) => a.score - b.score || b.perfects - a.perfects || byName(a, b));
+        }
+
+        return results.sort(byName);
+      }
+
+      function fitTextToContainer(element, maxPx, minPx) {
+        element.style.fontSize = `${maxPx}px`;
+
+        let size = maxPx;
+        while (size > minPx && element.scrollWidth > element.clientWidth) {
+          size -= 1;
+          element.style.fontSize = `${size}px`;
+        }
+      }
+
+      function fitManagerNames() {
+        document.querySelectorAll(".manager-name").forEach((element) => {
+          fitTextToContainer(element, 20, 11);
+        });
+
+        const selectedHeading = document.getElementById("selectedName");
+        fitTextToContainer(selectedHeading, window.innerWidth >= 760 ? 58 : 40, 24);
+      }
+
       function render() {
-        const results = managers.map(result).sort((a, b) => a.score - b.score || b.perfects - a.perfects);
+        const managers = allManagers();
+        const revealed = predictionsArePublic();
+        const results = sortedResults(managers, revealed);
+        const revealInfo = document.getElementById("revealInfo");
+        revealInfo.hidden = revealed;
+        revealInfo.textContent = revealed ? "" : revealMessage();
         const leader = results[0];
+        if (!leader) {
+          document.getElementById("heroStats").innerHTML = `
+            <div class="hero-stat"><p class="label">Managers</p><p class="value">0</p></div>
+          `;
+          document.getElementById("managerList").innerHTML = '<div class="empty-state">No managers yet.</div>';
+          return;
+        }
         const selected = results.find((manager) => manager.name === selectedName) || leader;
         const selectedRank = results.findIndex((manager) => manager.name === selected.name) + 1;
+        const alphabeticalResults = [...results].sort(byName);
+        localStorage.setItem(SELECTED_KEY, selected.name);
 
-        document.getElementById("heroStats").innerHTML = `
-          <div class="hero-stat"><p class="label">Leader</p><p class="value">${leader.name}</p></div>
+        document.getElementById("heroStats").innerHTML = revealed ? `
+          <div class="hero-stat"><p class="label">Leader</p><p class="value">${escapeHtml(leader.name)}</p></div>
           <div class="hero-stat"><p class="label">Score</p><p class="value">${leader.score}</p></div>
           <div class="hero-stat"><p class="label">Perfects</p><p class="value">${leader.perfects}</p></div>
+        ` : `
+          <div class="hero-stat"><p class="label">Managers</p><p class="value">${results.length}</p></div>
         `;
+
         document.getElementById("managerList").innerHTML = results.map((manager, index) => `
-          <button class="manager-row ${manager.name === selected.name ? "active" : ""}" data-manager="${manager.name}">
+          <button class="manager-row ${manager.name === selected.name ? "active" : ""}" data-manager-index="${index}">
             <span class="num">${index + 1}</span>
-            <span class="manager-name">${manager.name}</span>
-            <span class="score">${manager.score}</span>
-            <span class="perf">${manager.perfects}</span>
-            <span class="gap">${index === 0 ? "Lead" : "+" + (manager.score - leader.score)}</span>
+            <span class="manager-name">${escapeHtml(manager.name)}</span>
+            <span class="score">${revealed ? manager.score : '<span class="pending-stat" aria-hidden="true"></span>'}</span>
+            <span class="perf">${revealed ? manager.perfects : '<span class="pending-stat" aria-hidden="true"></span>'}</span>
+            <span class="gap">${revealed ? (index === 0 ? "Lead" : "+" + (manager.score - leader.score)) : ""}</span>
           </button>
         `).join("");
-        document.getElementById("managerSelect").innerHTML = results.map((manager, index) => `
-          <option value="${manager.name}" ${manager.name === selected.name ? "selected" : ""}>
-            ${index + 1}. ${manager.name} - ${manager.score} pts, ${manager.perfects} perfects
+        document.getElementById("managerSelect").innerHTML = alphabeticalResults.map((manager, index) => `
+          <option value="${escapeHtml(manager.name)}" ${manager.name === selected.name ? "selected" : ""}>
+            ${escapeHtml(manager.name)}
           </option>
         `).join("");
         document.getElementById("selectedRank").textContent = `${selectedRank}/${results.length}`;
         document.getElementById("selectedName").textContent = selected.name;
-        document.getElementById("selectedScore").textContent = selected.score;
-        document.getElementById("selectedPerfects").textContent = selected.perfects;
+        document.getElementById("selectedScore").textContent = revealed ? selected.score : "";
+        document.getElementById("selectedPerfects").textContent = revealed ? selected.perfects : "";
         const buyInButton = document.getElementById("buyInButton");
         buyInButton.hidden = Boolean(selected.paid);
         buyInButton.style.display = selected.paid ? "none" : "";
@@ -1231,14 +1416,14 @@
         document.getElementById("pickCards").innerHTML = selected.rows.map((row, index) => `
           <div class="pick-row" style="background:${index % 2 === 0 ? selected.color + "73" : selected.color + "3d"}">
             <span class="num">${row.predicted}</span>
-            <span class="club">${row.team}</span>
-            <span class="right">${row.actual}</span>
-            <span class="right ${scoreClass(row.score)}">${row.score}</span>
+            <span class="club">${revealed ? escapeHtml(row.team) : '<span class="secret-club" aria-hidden="true"></span>'}</span>
+            <span class="right">${revealed ? row.actual : ""}</span>
+            <span class="right ${revealed ? scoreClass(row.score) : ""}">${revealed ? row.score : ""}</span>
           </div>
         `).join("");
         document.getElementById("pickRows").innerHTML = selected.rows.map((row, index) => `
           <tr style="background:${index % 2 === 0 ? selected.color + "73" : selected.color + "3d"}">
-            <td>${row.predicted}</td><td>${row.team}</td><td>${row.actual}</td><td class="${scoreClass(row.score)}">${row.score}</td>
+            <td>${row.predicted}</td><td>${revealed ? escapeHtml(row.team) : '<span class="secret-club" aria-hidden="true"></span>'}</td><td>${revealed ? row.actual : ""}</td><td class="${revealed ? scoreClass(row.score) : ""}">${revealed ? row.score : ""}</td>
           </tr>
         `).join("");
 
@@ -1253,9 +1438,9 @@
           <tr class="${isCurrentlyPlaying(row) ? "playing" : ""}"><td>${row.position}</td><td>${row.team}</td><td>${row.won}</td><td>${row.drawn}</td><td>${row.lost}</td><td>${row.points}</td><td>${row.goalDifference}</td></tr>
         `).join("");
 
-        document.querySelectorAll("[data-manager]").forEach((button) => {
+        document.querySelectorAll("[data-manager-index]").forEach((button) => {
           button.addEventListener("click", () => {
-            selectedName = button.dataset.manager;
+            selectedName = results[Number(button.dataset.managerIndex)]?.name || selected.name;
             render();
           });
         });
@@ -1263,9 +1448,15 @@
           selectedName = event.target.value;
           render();
         };
+
+        fitManagerNames();
       }
 
       document.getElementById("buyInButton").addEventListener("click", openVenmo);
+      window.addEventListener("storage", (event) => {
+        if (event.key === STORAGE_KEY) render();
+      });
+      window.addEventListener("resize", fitManagerNames);
       render();
     </script>
   </body>
