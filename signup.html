@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Submit Predictions | Premier League Predictions 26/27</title>
-    <link rel="icon" href="public/premier-league-logo-symbol.png" />
+    <link rel="icon" href="/public/premier-league-logo-symbol.png" />
     <style>
       :root {
         --purple: #37003c;
@@ -13,6 +13,7 @@
         --cyan: #05f0ff;
         --yellow: #ebff00;
         --pl-font: "Radikal", "Avenir Next", "Futura", "Trebuchet MS", Arial, sans-serif;
+        --logo-url: url("/public/premier-league-logo-symbol.png");
       }
 
       * {
@@ -581,7 +582,7 @@
       <section class="hero">
         <div class="wrap">
           <div class="brand">
-            <img src="public/premier-league-logo-symbol.png" alt="Premier League" />
+            <img src="/public/premier-league-logo-symbol.png" onerror="this.onerror=null;this.src='public/premier-league-logo-symbol.png';" alt="Premier League" />
             <div class="hero-copy">
               <h1>Premier League Predictions 26/27</h1>
               <p class="hero-subtitle">SIGN UP NOW</p>
@@ -679,6 +680,10 @@
     </main>
 
     <script>
+      if (window.location.protocol === "file:") {
+        document.documentElement.style.setProperty("--logo-url", 'url("public/premier-league-logo-symbol.png")');
+      }
+
       const teams = [
         "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton & Hove Albion",
         "Chelsea", "Coventry City", "Crystal Palace", "Everton", "Fulham",
