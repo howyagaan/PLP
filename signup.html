@@ -562,6 +562,7 @@
       let manager = null;
       let draggingIndex = null;
       let dragPointerId = null;
+      let predictionSubmitted = false;
 
       function escapeHtml(value) {
         return String(value)
@@ -734,7 +735,10 @@
 
       document.getElementById("confirmButton").addEventListener("click", async () => {
         const reviewMessage = document.getElementById("reviewMessage");
-        if (!manager) return;
+        if (!manager || predictionSubmitted) return;
+        predictionSubmitted = true;
+        document.getElementById("confirmButton").disabled = true;
+        document.getElementById("editButton").disabled = true;
 
         const entry = {
           firstName: manager.firstName,
@@ -745,9 +749,11 @@
           picks: [...picks]
         };
         localStorage.setItem(SELECTED_KEY, `${manager.firstName} ${manager.lastName}`);
-        await submitToNetlify(entry);
-        await submitToCommissionerSheet(entry);
         showLockedConfirmation();
+        await Promise.all([
+          submitToNetlify(entry),
+          submitToCommissionerSheet(entry)
+        ]);
       });
     </script>
   </body>
