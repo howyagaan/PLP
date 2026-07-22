@@ -1,6 +1,8 @@
 const SPREADSHEET_ID = "1gKulkcIi19FEWboYHuDJ754AB-gB9D5AOgDCXmwMIAA";
 const ENTRIES_SHEET = "Entries";
 const PICKS_SHEET = "Picks";
+const COMMISSIONER_EMAIL = "howyagaan@gmail.com";
+const COMMISSIONER_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit`;
 
 function doGet(e) {
   const callback = clean(e.parameter.callback) || "plpReceiveSheetEntries";
@@ -65,6 +67,19 @@ function doPost(e) {
       picksSheet.appendRow([lockedAt, email, fullName, index + 1, team]);
     });
 
+    try {
+      notifyCommissioner({
+        fullName,
+        firstName,
+        lastName,
+        email,
+        lockedAt,
+        picks
+      });
+    } catch (error) {
+      console.error(`Entry saved, but commissioner email failed: ${error}`);
+    }
+
     return jsonResponse({ ok: true });
   } catch (error) {
     return jsonResponse({ ok: false, error: String(error) });
@@ -86,6 +101,31 @@ function emailAlreadyExists(sheet, email) {
     .getValues()
     .flat()
     .some((value) => clean(value).toLowerCase() === email);
+}
+
+function notifyCommissioner(entry) {
+  const recipient = clean(COMMISSIONER_EMAIL) || Session.getEffectiveUser().getEmail();
+  if (!recipient) return;
+
+  const picksList = entry.picks
+    .map((team, index) => `${index + 1}. ${team}`)
+    .join("\n");
+
+  MailApp.sendEmail(
+    recipient,
+    `New PLP signup: ${entry.fullName}`,
+    [
+      "A new Premier League Predictions entry has been submitted.",
+      "",
+      `Manager: ${entry.fullName}`,
+      `Email: ${entry.email}`,
+      `Submitted: ${entry.lockedAt}`,
+      `Sheet: ${COMMISSIONER_SHEET_URL}`,
+      "",
+      "Predicted table:",
+      picksList
+    ].join("\n")
+  );
 }
 
 function jsonResponse(payload) {
